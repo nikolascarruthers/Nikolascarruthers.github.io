@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikolas Carruthers — Photography</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --white: #f5f2ee;
+  --black: #0a0a0a;
+  --gray: #888;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CURSOR */
+.cursor {
+  position: fixed; width: 8px; height: 8px;
+  background: var(--white); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid rgba(245,242,238,0.5); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.12s ease-out, width 0.3s, height 0.3s, opacity 0.3s;
+}
+body:hover .cursor { opacity: 1; }
+
+/* LOADER */
+#loader {
+  position: fixed; inset: 0; background: var(--black);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10000; transition: opacity 1s ease, visibility 1s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; }
+.loader-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-weight: 300; letter-spacing: 0.3em;
+  color: var(--white); opacity: 0;
+  animation: loaderFade 2s ease forwards;
+}
+@keyframes loaderFade {
+  0% { opacity: 0; transform: translateY(10px); }
+  40% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 2rem 4rem;
+  mix-blend-mode: difference;
+}
+.nav-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--white); text-decoration: none; font-weight: 400;
+  opacity: 0; animation: fadeIn 1s ease 2.5s forwards;
+}
+.nav-right {
+  display: flex; gap: 3rem;
+  opacity: 0; animation: fadeIn 1s ease 2.5s forwards;
+}
+.nav-right a {
+  font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--white); text-decoration: none; font-weight: 300;
+  transition: opacity 0.3s;
+}
+.nav-right a:hover { opacity: 0.5; }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* HERO */
+.hero {
+  height: 100vh; position: relative;
+  display: flex; align-items: flex-end;
+  padding: 0 4rem 5rem;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('photos/DSC09219.jpeg');
+  background-size: cover; background-position: center;
+  transform: scale(1.08);
+  animation: heroScale 8s ease forwards;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.1) 60%, rgba(10,10,10,0.2) 100%);
+}
+@keyframes heroScale {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.0); }
+}
+.hero-content {
+  position: relative; z-index: 2;
+  opacity: 0; animation: fadeUp 1.2s ease 2.2s forwards;
+}
+.hero-eyebrow {
+  font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(245,242,238,0.6); margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 300; line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+.hero-title em { font-style: italic; }
+.hero-sub {
+  margin-top: 1.5rem;
+  font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(245,242,238,0.5);
+}
+.scroll-hint {
+  position: absolute; bottom: 5rem; right: 4rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  opacity: 0; animation: fadeIn 1s ease 3.5s forwards;
+}
+.scroll-hint span {
+  font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(245,242,238,0.4); writing-mode: vertical-rl;
+}
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, rgba(245,242,238,0.4), transparent);
+  animation: scrollLine 2s ease-in-out infinite 4s;
+}
+@keyframes scrollLine {
+  0%, 100% { transform: scaleY(1); transform-origin: top; }
+  50% { transform: scaleY(0.3); transform-origin: top; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* PHOTO SECTIONS — full bleed */
+.photo-section {
+  position: relative; width: 100%;
+  overflow: hidden;
+}
+
+/* FULL HEIGHT SINGLE */
+.section-full {
+  height: 100vh;
+}
+.section-full .photo-fill {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  background-attachment: fixed;
+  transform: scale(1.0);
+  transition: transform 0.1s linear;
+}
+.section-full .photo-fill::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,10,10,0.5) 0%, transparent 50%);
+}
+
+/* SPLIT TWO */
+.section-split {
+  display: grid; grid-template-columns: 1fr 1fr;
+  height: 85vh;
+}
+.section-split .half {
+  position: relative; overflow: hidden;
+}
+.section-split .half img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 0.6s ease;
+}
+.section-split .half:hover img { transform: scale(1.0); }
+
+/* TALL + SHORT GRID */
+.section-asymmetric {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 50vh 50vh;
+  height: 100vh;
+}
+.section-asymmetric .cell {
+  position: relative; overflow: hidden;
+}
+.section-asymmetric .cell img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.05);
+  transition: transform 0.6s ease;
+}
+.section-asymmetric .cell:hover img { transform: scale(1.0); }
+.section-asymmetric .cell.tall {
+  grid-row: 1 / 3;
+}
+
+/* THREE COLUMN */
+.section-three {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  height: 70vh;
+}
+.section-three .cell {
+  position: relative; overflow: hidden;
+}
+.section-three .cell img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.06);
+  transition: transform 0.7s ease;
+}
+.section-three .cell:hover img { transform: scale(1.0); }
+
+/* WIDE PANORAMIC */
+.section-wide {
+  height: 60vh;
+}
+.section-wide img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+
+/* CAPTION OVERLAY */
+.photo-caption {
+  position: absolute; bottom: 2rem; left: 2.5rem; z-index: 5;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+.photo-section:hover .photo-caption,
+.half:hover .photo-caption,
+.cell:hover .photo-caption {
+  opacity: 1; transform: translateY(0);
+}
+.photo-caption .loc {
+  font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(245,242,238,0.6); margin-bottom: 0.25rem;
+}
+.photo-caption .title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 300; color: var(--white);
+  font-style: italic;
+}
+
+/* TEXT INTERLUDE */
+.interlude {
+  padding: 12rem 4rem;
+  max-width: 900px; margin: 0 auto;
+  text-align: center;
+}
+.interlude .quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 300; font-style: italic;
+  line-height: 1.4; color: var(--white);
+  opacity: 0;
+  transition: opacity 1s ease, transform 1s ease;
+  transform: translateY(20px);
+}
+.interlude .quote.visible { opacity: 1; transform: translateY(0); }
+.interlude .byline {
+  margin-top: 2rem;
+  font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(245,242,238,0.4);
+  opacity: 0; transition: opacity 1s ease 0.3s;
+}
+.interlude .byline.visible { opacity: 1; }
+
+/* REGION LABEL */
+.region-label {
+  padding: 5rem 4rem 3rem;
+  display: flex; align-items: center; gap: 2rem;
+}
+.region-label .num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem; font-weight: 300; color: rgba(245,242,238,0.08);
+  line-height: 1; letter-spacing: -0.03em;
+}
+.region-label .text {}
+.region-label .region {
+  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(245,242,238,0.4); margin-bottom: 0.4rem;
+}
+.region-label .region-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 300; color: var(--white);
+}
+
+/* HORIZONTAL SCROLL STRIP */
+.hscroll-outer {
+  overflow: hidden; padding: 2rem 0;
+  position: relative;
+}
+.hscroll-track {
+  display: flex; gap: 1.5rem;
+  padding: 0 4rem;
+  animation: hscroll 40s linear infinite;
+  width: max-content;
+}
+.hscroll-track:hover { animation-play-state: paused; }
+@keyframes hscroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.hscroll-item {
+  flex-shrink: 0; width: 280px; height: 380px;
+  overflow: hidden; position: relative;
+}
+.hscroll-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.04);
+  transition: transform 0.5s ease;
+}
+.hscroll-item:hover img { transform: scale(1.0); }
+
+/* CONTACT FOOTER */
+.footer-section {
+  height: 100vh; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.footer-bg {
+  position: absolute; inset: 0;
+  background-image: url('photos/DSC09181.jpeg');
+  background-size: cover; background-position: center;
+  filter: brightness(0.35);
+}
+.footer-content {
+  position: relative; z-index: 2;
+  text-align: center;
+}
+.footer-content .label {
+  font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(245,242,238,0.5); margin-bottom: 2rem;
+}
+.footer-content .big {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 9vw, 8rem);
+  font-weight: 300; line-height: 0.9;
+  font-style: italic;
+}
+.footer-content .email {
+  display: block; margin-top: 3rem;
+  font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(245,242,238,0.5); text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-content .email:hover { color: var(--white); }
+.footer-bottom {
+  padding: 2rem 4rem;
+  display: flex; justify-content: space-between;
+  font-size: 0.65rem; letter-spacing: 0.1em;
+  color: rgba(245,242,238,0.25);
+}
+.footer-bottom a {
+  color: rgba(245,242,238,0.4); text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-bottom a:hover { color: var(--white); }
+
+/* HORIZONTAL DIVIDER */
+.divider {
+  height: 1px; background: rgba(245,242,238,0.06);
+  margin: 0 4rem;
+}
+
+/* PARALLAX reveal */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 768px) {
+  nav { padding: 1.5rem 1.5rem; }
+  .hero { padding: 0 1.5rem 3rem; }
+  .section-split { grid-template-columns: 1fr; height: auto; }
+  .section-split .half { height: 60vw; }
+  .section-three { grid-template-columns: 1fr; height: auto; }
+  .section-three .cell { height: 80vw; }
+  .section-asymmetric { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
+  .section-asymmetric .cell.tall { grid-row: auto; }
+  .section-asymmetric .cell { height: 70vw; }
+  .interlude { padding: 6rem 1.5rem; }
+  .region-label { padding: 3rem 1.5rem 2rem; }
+  .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div id="loader">
+  <p class="loader-text">Nikolas Carruthers</p>
+</div>
+
+<nav>
+  <a href="https://nikolascarruthers.github.io" class="nav-name">← Portfolio</a>
+  <div class="nav-right">
+    <a href="#landscapes">Landscapes</a>
+    <a href="#travel">Travel</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Visual work · 2020–2026</p>
+    <h1 class="hero-title">Through<br><em>the lens</em></h1>
+    <p class="hero-sub">Landscape · Travel · Portrait</p>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- INTERLUDE 1 -->
+<div class="interlude">
+  <p class="quote js-reveal-text">"The world is large, and every frame is a decision."</p>
+  <p class="byline js-reveal-text">Nikolas Carruthers — Sony Alpha Series</p>
+</div>
+
+<!-- YOSEMITE -->
+<div class="region-label reveal" id="landscapes">
+  <span class="num">01</span>
+  <div class="text">
+    <p class="region">California, USA</p>
+    <p class="region-name">Yosemite &amp; High Sierra</p>
+  </div>
+</div>
+
+<section class="photo-section section-full">
+  <div class="photo-fill" style="background-image: url('photos/DSC09219.jpeg')"></div>
+  <div class="photo-caption">
+    <p class="loc">Yosemite Valley</p>
+    <p class="title">Tunnel View, morning fog</p>
+  </div>
+</section>
+
+<section class="photo-section section-split">
+  <div class="half">
+    <img src="photos/DSC09191.jpeg" alt="Yosemite" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Glacier Point</p>
+      <p class="title">Half Dome at last light</p>
+    </div>
+  </div>
+  <div class="half">
+    <img src="photos/DSC09181.jpeg" alt="Yosemite" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Yosemite</p>
+      <p class="title">Sitting on the edge</p>
+    </div>
+  </div>
+</section>
+
+<section class="photo-section section-asymmetric">
+  <div class="cell tall">
+    <img src="photos/DSC06839.jpeg" alt="Sierra" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">High Sierra</p>
+      <p class="title">Alpenglow at dusk</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC05267.jpg" alt="Sierra lake" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Sierra Nevada</p>
+      <p class="title">Alpine wildflowers</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC06810.jpeg" alt="Sierra lake" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">High Sierra</p>
+      <p class="title">Sunset on still water</p>
+    </div>
+  </div>
+</section>
+
+<section class="photo-section section-three">
+  <div class="cell">
+    <img src="photos/DSC04858.jpg" alt="Sierra" loading="lazy">
+  </div>
+  <div class="cell">
+    <img src="photos/DSC04956.jpg" alt="Sierra" loading="lazy">
+  </div>
+  <div class="cell">
+    <img src="photos/DSC05109.jpg" alt="Sierra lake" loading="lazy">
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MOROCCO -->
+<div class="region-label reveal" id="travel">
+  <span class="num">02</span>
+  <div class="text">
+    <p class="region">Sahara Desert, Morocco</p>
+    <p class="region-name">Erg Chebbi</p>
+  </div>
+</div>
+
+<section class="photo-section section-full">
+  <div class="photo-fill" style="background-image: url('photos/DSC01788.jpeg')"></div>
+  <div class="photo-caption">
+    <p class="loc">Sahara Desert</p>
+    <p class="title">Camel caravan at sunset</p>
+  </div>
+</section>
+
+<section class="photo-section section-split">
+  <div class="half">
+    <img src="photos/DSC01671.jpeg" alt="Morocco" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Erg Chebbi</p>
+      <p class="title">Sandboarding the dunes</p>
+    </div>
+  </div>
+  <div class="half">
+    <img src="photos/DSC01680.jpeg" alt="Morocco" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Sahara</p>
+      <p class="title">Camels resting</p>
+    </div>
+  </div>
+</section>
+
+<section class="photo-section section-three">
+  <div class="cell">
+    <img src="photos/DSC01625.jpeg" alt="Morocco portrait" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Morocco</p>
+      <p class="title">Eyes in the desert</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC01612.jpeg" alt="Morocco portrait" loading="lazy">
+  </div>
+  <div class="cell">
+    <img src="photos/DSC01736.jpeg" alt="Morocco dunes" loading="lazy">
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SICILY -->
+<div class="region-label reveal">
+  <span class="num">03</span>
+  <div class="text">
+    <p class="region">Sicily, Italy</p>
+    <p class="region-name">Taormina &amp; Mount Etna</p>
+  </div>
+</div>
+
+<section class="photo-section section-full">
+  <div class="photo-fill" style="background-image: url('photos/DSC03031.jpeg')"></div>
+  <div class="photo-caption">
+    <p class="loc">Taormina, Sicily</p>
+    <p class="title">Mount Etna from above the city</p>
+  </div>
+</section>
+
+<section class="photo-section section-asymmetric">
+  <div class="cell tall">
+    <img src="photos/DSC02925.jpeg" alt="Etna" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Taormina</p>
+      <p class="title">Etna — snow cap and haze</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC02908.jpeg" alt="Taormina" loading="lazy">
+  </div>
+  <div class="cell">
+    <img src="photos/DSC02794.JPG" alt="Sicily coast" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Sicily</p>
+      <p class="title">Coastline at blue hour</p>
+    </div>
+  </div>
+</section>
+
+<section class="photo-section section-split">
+  <div class="half">
+    <img src="photos/DSC02532.jpeg" alt="Palermo" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Palermo</p>
+      <p class="title">Golden hour courtyard</p>
+    </div>
+  </div>
+  <div class="half">
+    <img src="photos/DSC03054.jpeg" alt="Sicily coast" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Gran Canaria</p>
+      <p class="title">Volcanic coastline</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MALTA -->
+<div class="region-label reveal">
+  <span class="num">04</span>
+  <div class="text">
+    <p class="region">Malta &amp; Comino</p>
+    <p class="region-name">Blue Lagoon</p>
+  </div>
+</div>
+
+<section class="photo-section section-full">
+  <div class="photo-fill" style="background-image: url('photos/DSC02469.jpeg')"></div>
+  <div class="photo-caption">
+    <p class="loc">Comino, Malta</p>
+    <p class="title">Blue Lagoon overlook</p>
+  </div>
+</section>
+
+<section class="photo-section section-three">
+  <div class="cell">
+    <img src="photos/DSC02473.jpeg" alt="Malta" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Malta</p>
+      <p class="title">Harbour boats</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC02508.jpeg" alt="Malta" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Malta</p>
+      <p class="title">Blue Grotto arch</p>
+    </div>
+  </div>
+  <div class="cell">
+    <img src="photos/DSC02364.jpeg" alt="Malta cave" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Malta</p>
+      <p class="title">Cave framing the sea</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ALPS + SWITZERLAND -->
+<div class="region-label reveal">
+  <span class="num">05</span>
+  <div class="text">
+    <p class="region">Swiss Alps</p>
+    <p class="region-name">Zermatt &amp; The Matterhorn</p>
+  </div>
+</div>
+
+<section class="photo-section section-full">
+  <div class="photo-fill" style="background-image: url('photos/DSC00559.JPG')"></div>
+  <div class="photo-caption">
+    <p class="loc">Zermatt, Switzerland</p>
+    <p class="title">The Matterhorn in winter</p>
+  </div>
+</section>
+
+<section class="photo-section section-split">
+  <div class="half">
+    <img src="photos/DSC00717.jpeg" alt="Alps window" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Swiss Alps</p>
+      <p class="title">Mountain view through glass</p>
+    </div>
+  </div>
+  <div class="half">
+    <img src="photos/DSC00778.jpeg" alt="Barcelona street" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Barcelona</p>
+      <p class="title">Morning light on the boulevard</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HORIZONTAL SCROLL — Indonesia + Korea + misc -->
+<div class="region-label reveal">
+  <span class="num">06</span>
+  <div class="text">
+    <p class="region">Asia · Pacific · Americas</p>
+    <p class="region-name">Further afield</p>
+  </div>
+</div>
+
+<div class="hscroll-outer">
+  <div class="hscroll-track" id="htrack">
+    <div class="hscroll-item"><img src="photos/DSC05962.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC05070.jpg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04804.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04516.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04500.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC05069.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC06532.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC06565.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC03527.JPG" alt="" loading="lazy"></div>
+    <!-- duplicate for seamless loop -->
+    <div class="hscroll-item"><img src="photos/DSC05962.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC05070.jpg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04804.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04516.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC04500.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC05069.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC06532.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC06565.jpeg" alt="" loading="lazy"></div>
+    <div class="hscroll-item"><img src="photos/DSC03527.JPG" alt="" loading="lazy"></div>
+  </div>
+</div>
+
+<!-- NEW YORK -->
+<div class="region-label reveal">
+  <span class="num">07</span>
+  <div class="text">
+    <p class="region">New York City</p>
+    <p class="region-name">Manhattan</p>
+  </div>
+</div>
+
+<section class="photo-section section-split">
+  <div class="half">
+    <img src="photos/DSC00385.jpeg" alt="NYC" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">Lower Manhattan</p>
+      <p class="title">City dusk from above</p>
+    </div>
+  </div>
+  <div class="half">
+    <img src="photos/DSC00556.jpeg" alt="NYC skyline" loading="lazy">
+    <div class="photo-caption">
+      <p class="loc">New York</p>
+      <p class="title">One WTC through haze</p>
+    </div>
+  </div>
+</section>
+
+<section class="photo-section section-wide">
+  <img src="photos/DSC02859.jpeg" alt="Taormina" loading="lazy">
+</section>
+
+<!-- INTERLUDE 2 -->
+<div class="interlude">
+  <p class="quote js-reveal-text">"Every place leaves a frame in memory."</p>
+  <p class="byline js-reveal-text">15 countries · Sony Alpha Series</p>
+</div>
+
+<!-- CONTACT -->
+<section class="footer-section" id="contact">
+  <div class="footer-bg"></div>
+  <div class="footer-content">
+    <p class="label">Available for projects</p>
+    <h2 class="big">Let's<br>work</h2>
+    <a class="email" href="mailto:Nikolas.carruthers@gmail.com">Nikolas.carruthers@gmail.com</a>
+  </div>
+</section>
+
+<div class="footer-bottom">
+  <span>© 2026 Nikolas Carruthers</span>
+  <a href="https://nikolascarruthers.github.io">← Back to portfolio</a>
+</div>
+
+<script>
+// Loader
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+  }, 2200);
+});
+
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('a, img, .half, .cell').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '14px'; cursor.style.height = '14px';
+    ring.style.width = '60px'; ring.style.height = '60px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '8px'; cursor.style.height = '8px';
+    ring.style.width = '36px'; ring.style.height = '36px';
+  });
+});
+
+// Scroll reveals
+const reveals = document.querySelectorAll('.reveal, .js-reveal-text');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15 });
+reveals.forEach(el => revealObs.observe(el));
+
+// Parallax on fixed bg sections
+const fullSections = document.querySelectorAll('.section-full .photo-fill');
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  fullSections.forEach(el => {
+    const parent = el.closest('.section-full');
+    const rect = parent.getBoundingClientRect();
+    if (rect.bottom > 0 && rect.top < window.innerHeight) {
+      const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+      el.style.transform = `translateY(${(progress - 0.5) * 80}px) scale(1.05)`;
+    }
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
