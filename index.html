@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikolas Carruthers — Finance & Marketing</title>
+<meta name="description" content="Nikolas Carruthers — SDSU finance student working at the intersection of financial analysis, digital marketing, and AI. San Diego, CA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #f4f1ea;
+    --paper-2: #ece8de;
+    --ink: #16190f;
+    --ink-soft: #4b503f;
+    --ink-faint: #8a8f7c;
+    --green: #374f2f;
+    --green-bright: #0e8a56;
+    --orange: #e8541e;
+    --line: rgba(22,25,15,0.14);
+    --line-strong: rgba(22,25,15,0.3);
+    --dark: #101208;
+    --dark-text: #e9e6da;
+    --display: 'Space Grotesk', system-ui, sans-serif;
+    --body: 'Inter', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--green); color: var(--paper); }
+
+  /* ---------- CUSTOM CURSOR (bull silhouette) ---------- */
+  .cursor-icon {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 27px; height: 27px; margin: -13.5px 0 0 -13.5px;
+    pointer-events: none; mix-blend-mode: difference;
+    opacity: 0; transition: opacity 0.25s ease;
+    will-change: transform;
+  }
+  .cursor-icon svg { width: 100%; height: 100%; display: block; fill: #fff; }
+  @media (hover: hover) and (pointer: fine) {
+    html.cursor-custom, html.cursor-custom * { cursor: none !important; }
+  }
+  @media (hover: none), (pointer: coarse) {
+    .cursor-icon { display: none; }
+  }
+
+  .mono {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+    height: 64px;
+    background: rgba(244,241,234,0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 250ms ease;
+  }
+  nav.scrolled { border-bottom-color: var(--line); }
+  .nav-logo {
+    font-family: var(--mono); font-size: 0.85rem; font-weight: 500;
+    color: var(--ink); text-decoration: none; letter-spacing: 0.1em;
+  }
+  .nav-logo span { color: var(--green-bright); }
+  .nav-links { display: flex; align-items: center; gap: 1.9rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none; color: var(--ink-soft);
+    transition: color 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-links a:hover { color: var(--orange); }
+  }
+  .nav-resume {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none;
+    color: var(--paper); background: var(--ink);
+    padding: 0.55rem 1.1rem; border-radius: 999px;
+    transition: transform 160ms var(--ease-out), background 150ms ease;
+  }
+  .nav-resume:active { transform: scale(0.96); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav-resume:hover { background: var(--green); }
+  }
+  @media (max-width: 860px) { .nav-links li:not(.nav-resume-li) { display: none; } }
+
+  /* ---------- HERO — scroll-driven market open ---------- */
+  .hero-track { height: 340vh; position: relative; }
+  .hero-sticky {
+    position: sticky; top: 0;
+    height: 100vh; height: 100svh;
+    overflow: hidden;
+    display: flex; align-items: center;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.12));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.12));
+  }
+  .hero-chart-wrap {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 74%;
+    pointer-events: none;
+  }
+  .hero-chart { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-chart .wick { stroke: rgba(22,25,15,0.32); stroke-width: 1.5; }
+  .hero-chart .candle.up { fill: var(--green-bright); }
+  .hero-chart .candle.dn { fill: var(--orange); }
+  .hero-chart .candle { opacity: 0.5; }
+  .hero-chart .pline {
+    fill: none; stroke: var(--green); stroke-width: 2.5;
+    filter: drop-shadow(0 0 7px rgba(14,138,86,0.6));
+  }
+  .hero-chart .parea { opacity: 0.3; }
+  .hero-dot {
+    position: absolute; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 0 4px rgba(232,84,30,0.2), 0 0 20px rgba(232,84,30,0.75);
+    transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 2;
+  }
+  .price-tag {
+    position: absolute; pointer-events: none; z-index: 2;
+    transform: translate(-50%, -210%);
+    background: var(--ink); color: var(--paper);
+    padding: 0.42rem 0.75rem; border-radius: 4px;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px -8px rgba(22,25,15,0.55);
+  }
+  .price-tag .pt-delta { color: #7ce8ac; }
+
+  .hero-center {
+    position: relative; z-index: 3;
+    width: 100%; max-width: 1320px; margin: 0 auto;
+    padding: 0 clamp(1.25rem, 4vw, 3rem);
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(3rem, 9.5vw, 8.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    will-change: transform;
+  }
+  .h1-line { display: block; overflow: hidden; }
+  .h1-line > span {
+    display: block;
+    transform: translateY(112%);
+    animation: rise 800ms var(--ease-out) forwards;
+  }
+  .h1-line:nth-child(2) > span { animation-delay: 90ms; color: var(--green); }
+  @keyframes rise { to { transform: translateY(0); } }
+
+  .hero-sub {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 2rem; align-items: end;
+    padding-top: 2.25rem;
+    opacity: 0; will-change: transform, opacity;
+  }
+  @media (max-width: 720px) { .hero-sub { grid-template-columns: 1fr; align-items: start; gap: 1.5rem; } }
+  .hero-desc { max-width: 560px; color: var(--ink-soft); font-size: 1.02rem; }
+  .hero-desc strong { color: var(--ink); font-weight: 600; }
+  .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    padding: 0.9rem 1.5rem; border-radius: 999px; border: 1px solid var(--ink);
+    transition: transform 160ms var(--ease-out), background 150ms ease, color 150ms ease;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-solid { background: var(--ink); color: var(--paper); }
+  .btn-ghost { background: transparent; color: var(--ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-solid:hover { background: var(--green); border-color: var(--green); }
+    .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+  }
+
+  .hud {
+    position: absolute; z-index: 3;
+    font-family: var(--mono); font-size: 0.68rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .hud .up { color: var(--green-bright); }
+  .hud .dn { color: var(--orange); }
+  .hud .big { font-size: 1rem; color: var(--ink); font-weight: 500; }
+  .hud-tl { top: 84px; left: clamp(1.25rem, 4vw, 3rem); }
+  .hud-tr { top: 84px; right: clamp(1.25rem, 4vw, 3rem); text-align: right; }
+  .hud-bl { bottom: 1.4rem; left: clamp(1.25rem, 4vw, 3rem); }
+  @media (max-width: 720px) { .hud-tl, .hud-bl { display: none; } }
+  .scroll-cue {
+    position: absolute; z-index: 3; bottom: 1.4rem; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 0.6rem; align-items: center;
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-soft);
+    transition: opacity 300ms ease; white-space: nowrap;
+  }
+  .scroll-cue .cue-arrow {
+    display: inline-block; color: var(--orange);
+    animation: cueBob 1.4s ease-in-out infinite;
+  }
+  @keyframes cueBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+  /* ---------- TICKER ---------- */
+  .ticker {
+    border-top: 1px solid var(--line-strong);
+    border-bottom: 1px solid var(--line-strong);
+    overflow: hidden; white-space: nowrap;
+    background: var(--paper);
+  }
+  .ticker-track {
+    display: inline-flex; align-items: center;
+    padding: 0.8rem 0;
+    animation: marquee 42s linear infinite;
+    will-change: transform;
+  }
+  @media (hover: hover) { .ticker:hover .ticker-track { animation-play-state: paused; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .tick {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-soft);
+    padding: 0 1.6rem; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .tick .up { color: var(--green-bright); }
+  .tick .dn { color: var(--orange); }
+
+  /* ---------- SECTION COMMONS ---------- */
+  section { max-width: 1320px; margin: 0 auto; padding: clamp(4.5rem, 9vw, 8rem) clamp(1.25rem, 4vw, 3rem); }
+  .sec-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    border-bottom: 1px solid var(--line-strong); padding-bottom: 1.1rem;
+  }
+  .sec-title {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.8rem, 3.6vw, 2.9rem);
+    letter-spacing: -0.02em; text-transform: uppercase; line-height: 1;
+  }
+  .sec-num { color: var(--green); }
+
+  /* scroll progress bar */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 300;
+    background: linear-gradient(90deg, var(--green-bright), var(--orange));
+    transform-origin: left center; transform: scaleX(0);
+    pointer-events: none;
+  }
+
+  /* reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity 650ms var(--ease-out), transform 650ms var(--ease-out); }
+  .reveal.in { opacity: 1; transform: none; }
+  /* springy pop-in for cards */
+  .reveal.pop {
+    transform: translateY(34px) scale(0.94);
+    transition: opacity 550ms var(--ease-out), transform 650ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  /* slide-in for timeline rows */
+  .reveal.slide-l { transform: translateX(-44px); }
+
+  /* glowing titles (selected work) */
+  @keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 4px rgba(55,79,47,0.2), 0 0 16px rgba(55,79,47,0.25); }
+    50% { text-shadow: 0 0 8px rgba(55,79,47,0.45), 0 0 28px rgba(55,79,47,0.5); }
+  }
+  .glow-title { animation: glowPulse 3.2s ease-in-out infinite; }
+  #work .proj-name {
+    color: var(--green);
+    animation: glowPulse 3.2s ease-in-out infinite;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    #work .proj:hover .proj-name, #work .proj-feature:hover .proj-name {
+      text-shadow: 0 0 10px rgba(55,79,47,0.55), 0 0 34px rgba(55,79,47,0.6);
+      animation: none;
+    }
+  }
+
+  /* chip cascade */
+  .chip {
+    opacity: 0; transform: translateY(10px) scale(0.9);
+  }
+  .chip.chip-in { opacity: 1; transform: none; }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .about-text p { color: var(--ink-soft); margin-bottom: 1.2rem; font-size: 1.05rem; }
+  .about-text p strong { color: var(--ink); font-weight: 600; }
+  .about-text .lede { font-family: var(--display); font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.4; color: var(--ink); font-weight: 500; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-strong); }
+  .stat { padding: 1.6rem 1.4rem; border-bottom: 1px solid var(--line-strong); }
+  .stat:nth-child(odd) { border-right: 1px solid var(--line-strong); }
+  .stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+  .stat-num {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(2rem, 3.4vw, 2.9rem); line-height: 1.1;
+    color: var(--green); letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.4rem; }
+  @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- EXPERIENCE ---------- */
+  .exp { border-top: 1px solid var(--line-strong); }
+  .exp-row {
+    display: grid; grid-template-columns: 180px minmax(0,1fr) minmax(0,1.4fr);
+    gap: clamp(1rem, 3vw, 3rem);
+    padding: 2.2rem 0.5rem;
+    border-bottom: 1px solid var(--line-strong);
+    transition: background 200ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .exp-row:hover { background: var(--paper-2); } }
+  .exp-when { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); padding-top: 0.3rem; }
+  .exp-role { font-family: var(--display); font-size: 1.25rem; font-weight: 600; line-height: 1.25; }
+  .exp-org { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green); margin-top: 0.45rem; }
+  .exp-points { list-style: none; color: var(--ink-soft); font-size: 0.95rem; }
+  .exp-points li { padding-left: 1.1rem; position: relative; margin-bottom: 0.45rem; }
+  .exp-points li::before { content: '↳'; position: absolute; left: 0; color: var(--orange); }
+  @media (max-width: 860px) { .exp-row { grid-template-columns: 1fr; gap: 0.75rem; } }
+
+  /* ---------- PROJECTS ---------- */
+  .proj-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
+  @media (max-width: 860px) { .proj-grid { grid-template-columns: 1fr; } }
+  .proj {
+    display: flex; flex-direction: column; gap: 1rem;
+    border: 1px solid var(--line-strong);
+    background: var(--paper);
+    padding: 1.6rem 1.5rem 1.4rem;
+    text-decoration: none; color: var(--ink);
+    position: relative;
+    transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), border-color 200ms ease;
+  }
+  .proj:active { transform: scale(0.98); }
+  @media (hover: hover) and (pointer: fine) {
+    .proj:hover {
+      transform: translateY(-4px);
+      border-color: var(--ink);
+      box-shadow: 0 12px 32px -14px rgba(22,25,15,0.28);
+    }
+    .proj:hover .proj-dl { color: var(--orange); }
+    .proj:hover .proj-dl .arr { transform: translateY(3px); }
+  }
+  .proj-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .badge {
+    font-family: var(--mono); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.12em;
+    padding: 0.28rem 0.6rem; border-radius: 3px; color: #fff;
+  }
+  .badge.xlsx { background: var(--green); }
+  .badge.pptx { background: var(--orange); }
+  .badge.docx { background: #2b4a8b; }
+  .proj-cat { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .proj-name { font-family: var(--display); font-size: 1.18rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+  .proj-skill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--body); font-size: 0.92rem; font-weight: 600;
+    color: var(--green); letter-spacing: -0.005em;
+  }
+  .proj-skill::before { content: '◆'; font-size: 0.55rem; color: var(--orange); }
+  .proj-desc { color: var(--ink-soft); font-size: 0.9rem; flex: 1; }
+  .proj-dl {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--green); display: inline-flex; align-items: center; gap: 0.45rem;
+    transition: color 150ms ease;
+    border-top: 1px solid var(--line); padding-top: 0.9rem;
+  }
+  .proj-dl .arr { display: inline-block; transition: transform 200ms var(--ease-out); }
+
+  /* ---------- FEATURED CASE STUDY ---------- */
+  .proj-feature {
+    grid-column: 1 / -1;
+    display: flex; flex-direction: column; gap: 1rem;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    padding: 1.8rem 1.8rem 1.6rem;
+    position: relative;
+  }
+  .badge.case { background: var(--ink); }
+  .badge.notion { background: #2b4a8b; }
+  .proj-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line-strong); border: 1px solid var(--line-strong);
+    margin: 0.25rem 0;
+  }
+  .proj-stat { background: var(--paper); padding: 1rem 1.1rem; }
+  .proj-stat-num {
+    font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+    color: var(--green); line-height: 1.1; letter-spacing: -0.02em;
+  }
+  .proj-stat-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-top: 0.35rem; }
+  @media (max-width: 640px) { .proj-stats { grid-template-columns: 1fr; } }
+  .proj-dl-row { display: flex; gap: 0.75rem; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 1rem; }
+  .proj-dl-btn {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.1rem; border: 1px solid var(--ink); color: var(--ink); border-radius: 999px;
+    transition: transform 160ms var(--ease-out), background 150ms ease, color 150ms ease;
+  }
+  .proj-dl-btn:active { transform: scale(0.96); }
+  @media (hover: hover) and (pointer: fine) {
+    .proj-dl-btn:hover { background: var(--ink); color: var(--paper); }
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--line-strong); }
+  .skill-cell { padding: 1.8rem 1.5rem; border-right: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
+  .skill-cell:nth-child(2n) { border-right: none; }
+  .skill-cell:nth-last-child(-n+2) { border-bottom: none; }
+  .skill-title { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+  .skill-title::before { content: ''; width: 8px; height: 8px; background: currentColor; display: inline-block; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .chip {
+    font-size: 0.78rem; color: var(--ink-soft);
+    border: 1px solid var(--line-strong); border-radius: 999px;
+    padding: 0.28rem 0.75rem;
+    transition: border-color 150ms ease, color 150ms ease,
+      opacity 450ms var(--ease-out), transform 500ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+  @media (hover: hover) and (pointer: fine) { .chip:hover { border-color: var(--orange); color: var(--ink); } }
+  @media (max-width: 860px) {
+    .skills-grid { grid-template-columns: 1fr; }
+    .skill-cell { border-right: none !important; border-bottom: 1px solid var(--line-strong) !important; }
+    .skill-cell:last-child { border-bottom: none !important; }
+  }
+
+  /* ---------- PHOTOGRAPHY BAND ---------- */
+  .photo-band { background: var(--dark); color: var(--dark-text); }
+  .photo-band-inner { max-width: 1320px; margin: 0 auto; padding: clamp(4.5rem, 9vw, 7rem) clamp(1.25rem, 4vw, 3rem); }
+  .photo-band .sec-head { border-bottom-color: rgba(233,230,218,0.25); }
+  .photo-band .mono { color: rgba(233,230,218,0.55); }
+  .photo-strip-wrap { overflow: hidden; margin: 0 calc(-1 * clamp(1.25rem, 4vw, 3rem)); }
+  .photo-strip {
+    display: inline-flex; gap: 10px; padding: 0.25rem 0;
+    animation: marquee 60s linear infinite;
+    will-change: transform;
+  }
+  @media (hover: hover) { .photo-strip-wrap:hover .photo-strip { animation-play-state: paused; } }
+  .photo-strip a { display: block; flex-shrink: 0; }
+  .photo-strip img {
+    height: clamp(200px, 30vw, 320px); width: auto; display: block;
+    filter: grayscale(1) contrast(1.05);
+    transition: filter 350ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .photo-strip a:hover img { filter: grayscale(0); } }
+  .photo-band-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: 2.5rem; }
+  .photo-band-foot p { color: rgba(233,230,218,0.65); max-width: 480px; font-size: 0.95rem; }
+  .photo-sub {
+    color: rgba(233,230,218,0.72); font-size: 1.05rem; max-width: 620px;
+    margin-top: 1.4rem; line-height: 1.55;
+  }
+  .photo-sub a {
+    color: var(--orange); text-decoration: none;
+    border-bottom: 1px solid rgba(232,84,30,0.4);
+    transition: border-color 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) { .photo-sub a:hover { border-color: var(--orange); } }
+  .btn-photo {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--dark); background: var(--dark-text); text-decoration: none;
+    padding: 0.95rem 1.6rem; border-radius: 999px;
+    transition: transform 160ms var(--ease-out), background 150ms ease;
+  }
+  .btn-photo:active { transform: scale(0.96); }
+  @media (hover: hover) and (pointer: fine) { .btn-photo:hover { background: var(--orange); color: #fff; } }
+
+  /* ---------- EDUCATION ---------- */
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .edu-card { border: 1px solid var(--line-strong); padding: 1.7rem 1.5rem; }
+  .edu-card .when { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.8rem; }
+  .edu-card h3 { font-family: var(--display); font-size: 1.25rem; font-weight: 600; line-height: 1.3; }
+  .edu-card .sub { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green); margin: 0.4rem 0 0.9rem; }
+  .edu-card p { color: var(--ink-soft); font-size: 0.9rem; }
+  @media (max-width: 860px) { .edu-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- CONTACT ---------- */
+  .contact { text-align: left; }
+  .contact-big {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.6rem, 4.6vw, 4rem);
+    letter-spacing: -0.02em; line-height: 1.05;
+    color: var(--ink); text-decoration: none;
+    display: inline-block; word-break: break-all;
+    transition: color 180ms ease, transform 200ms var(--ease-out);
+  }
+  .contact-big:active { transform: scale(0.99); }
+  @media (hover: hover) and (pointer: fine) { .contact-big:hover { color: var(--green); } }
+  .contact-sub { color: var(--ink-soft); max-width: 560px; margin: 1.4rem 0 2.2rem; }
+  .contact-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .copy-label { display: inline-block; transition: filter 200ms ease, opacity 200ms ease; }
+  .copying .copy-label { filter: blur(2px); opacity: 0.4; }
+
+  footer {
+    border-top: 1px solid var(--line-strong);
+    max-width: 1320px; margin: 0 auto;
+    padding: 1.6rem clamp(1.25rem, 4vw, 3rem) 2.2rem;
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  footer .mono { color: var(--ink-faint); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-track { height: auto; }
+    .hero-sticky { position: relative; height: auto; min-height: 100svh; padding: 7rem 0 4rem; }
+    .h1-line > span { transform: none; animation: none; }
+    .hero-sub { opacity: 1 !important; transform: none !important; }
+    .scroll-cue { display: none; }
+    .ticker-track, .photo-strip { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: opacity 200ms ease; }
+    .cue-arrow { animation: none; }
+    .glow-title, #work .proj-name { animation: none; text-shadow: none; }
+    .chip { opacity: 1; transform: none; }
+    .scroll-progress { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="#top">NC<span>/</span>SD·26</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#photography">Photography</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li class="nav-resume-li"><a class="nav-resume" href="files/Nikolas_Carruthers_Resume.pdf" target="_blank" rel="noopener">Résumé ↓</a></li>
+  </ul>
+</nav>
+
+<header class="hero-track" id="top">
+  <div class="hero-sticky">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-chart-wrap" aria-hidden="true">
+      <svg class="hero-chart" id="hero-chart" viewBox="0 0 1000 520" preserveAspectRatio="none"></svg>
+      <div class="hero-dot" id="hero-dot"></div>
+      <div class="price-tag" id="price-tag">NC $4.20 <span class="pt-delta" id="pt-delta">▲ +0.0%</span></div>
+    </div>
+    <div class="hero-center">
+      <h1 id="hero-name">
+        <span class="h1-line"><span>Nikolas</span></span>
+        <span class="h1-line"><span>Carruthers</span></span>
+      </h1>
+      <div class="hero-sub" id="hero-sub">
+        <p class="hero-desc"><strong>Finance student at San Diego State University</strong> working at the intersection of financial analysis, digital marketing, and AI — Bloomberg-certified, campaign-tested, and currently evaluating LLM outputs as an AI Fellow at Handshake.</p>
+        <div class="hero-cta">
+          <a class="btn btn-solid" href="#work">Selected work ↓</a>
+          <a class="btn btn-ghost" href="files/Nikolas_Carruthers_Resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+        </div>
+      </div>
+    </div>
+    <div class="hud hud-tl" aria-hidden="true">NC / SDSU:FIN · SESSION 2026</div>
+    <div class="hud hud-tr" aria-hidden="true"><span class="big" id="hud-price">$4.20</span><br><span class="up" id="hud-delta">▲ +0.0%</span></div>
+    <div class="hud hud-bl" aria-hidden="true">OPEN 4.20 · TARGET 26.20 · GRAD DEC '26</div>
+    <div class="scroll-cue" id="scroll-cue">Scroll to open the market <span class="cue-arrow">↓</span></div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="ticker-track">
+    <span class="tick">BLOOMBERG BMC <span class="up">▲ CERTIFIED</span></span>
+    <span class="tick">J.P. MORGAN IB SIMULATION <span class="up">▲ COMPLETE</span></span>
+    <span class="tick">DCF VALUATION <span class="up">▲ MODELED</span></span>
+    <span class="tick">TIKTOK + META ADS <span class="dn">▼ CAC</span></span>
+    <span class="tick">ENGAGEMENT @ COMPASS <span class="up">▲ 35%</span></span>
+    <span class="tick">EFFICIENT FRONTIER <span class="up">▲ OPTIMIZED</span></span>
+    <span class="tick">BARCELONA EXCHANGE <span class="up">▲ UAB '26</span></span>
+    <span class="tick">SDSU FINANCE <span class="up">▲ DEC 2026</span></span>
+    <span class="tick">FAMA-FRENCH 3-FACTOR <span class="up">▲ REGRESSED</span></span>
+    <span class="tick">AI FELLOW @ HANDSHAKE <span class="up">▲ ACTIVE</span></span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="sec-head reveal">
+    <h2 class="sec-title"><span class="sec-num">01</span> The full picture</h2>
+    <span class="mono">San Diego, CA</span>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="lede reveal">I turn raw numbers into decisions — whether that's a DCF model, a portfolio optimization, or a spreadsheet of 200 creator posts that needs to become a strategy.</p>
+      <p class="reveal">I'm a Finance BS candidate at San Diego State University (graduating December 2026) focused on financial analysis with a strong pull toward digital marketing strategy. My background spans corporate real estate marketing, small business ownership, AI model evaluation at Handshake, and a semester of international business at the Universitat Autònoma de Barcelona.</p>
+      <p class="reveal">I build <strong>financial models</strong>, run <strong>paid ad campaigns</strong>, and use <strong>AI tools</strong> to automate workflows — skills developed on real projects, not just in the classroom. I'm fluent in Bloomberg Terminal, advanced Excel, and platforms like TikTok and Meta Ads Manager.</p>
+      <p class="reveal">What ties it together: I'm comfortable in the numbers <strong>and</strong> the narrative — building the model, then explaining why it matters to whoever has to act on it.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><div class="stat-num" data-count="35" data-suffix="%">0%</div><div class="stat-label">Engagement growth driven at Compass Real Estate</div></div>
+      <div class="stat"><div class="stat-num" data-count="50" data-suffix="+">0+</div><div class="stat-label">Members served daily in client-facing role</div></div>
+      <div class="stat"><div class="stat-num" data-count="8" data-prefix="$" data-suffix="K+">$0K+</div><div class="stat-label">Annual budget managed as a small business owner</div></div>
+      <div class="stat"><div class="stat-num">DEC '26</div><div class="stat-label">SDSU graduation — BS Finance, Dean's List</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-head reveal">
+    <h2 class="sec-title"><span class="sec-num">02</span> Experience</h2>
+    <span class="mono">2021 — Present</span>
+  </div>
+  <div class="exp">
+    <div class="exp-row reveal">
+      <div class="exp-when">May 2026 — Present</div>
+      <div><div class="exp-role">AI Fellow</div><div class="exp-org">Handshake · Remote</div></div>
+      <ul class="exp-points">
+        <li>Evaluate a range of LLM outputs for correctness, clarity, accuracy, and more</li>
+        <li>Apply finance domain expertise to improve model performance through structured, iterative feedback</li>
+      </ul>
+    </div>
+    <div class="exp-row reveal">
+      <div class="exp-when">Jul 2024 — Dec 2025</div>
+      <div><div class="exp-role">Member Services Representative</div><div class="exp-org">Aztec Recreation / Associated Students · San Diego</div></div>
+      <ul class="exp-points">
+        <li>Promoted and sold membership packages, consistently exceeding sales targets</li>
+        <li>Managed operations at 2 satellite facilities — scheduling, opening/closing, equipment readiness</li>
+        <li>Delivered front-line service to 50+ members daily while enforcing facility policy</li>
+      </ul>
+    </div>
+    <div class="exp-row reveal">
+      <div class="exp-when">Jun 2021 — Aug 2024</div>
+      <div><div class="exp-role">Real Estate Marketing &amp; Administrative Assistant</div><div class="exp-org">Compass Real Estate · San Diego</div></div>
+      <ul class="exp-points">
+        <li>Developed multi-platform campaigns that drove 35% engagement growth across TikTok, Instagram, and Facebook</li>
+        <li>Supported the contract-to-close process with client file organization and administrative operations</li>
+      </ul>
+    </div>
+    <div class="exp-row reveal">
+      <div class="exp-when">Jun 2021 — Jun 2023</div>
+      <div><div class="exp-role">Small Business Owner — Landscape Services</div><div class="exp-org">Self-employed · San Diego</div></div>
+      <ul class="exp-points">
+        <li>Ran all operations: $8K+ annual budget, invoicing, and client acquisition</li>
+        <li>Optimized schedules to serve multiple clients simultaneously while growing revenue</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="sec-head reveal">
+    <h2 class="sec-title glow-title"><span class="sec-num">03</span> Selected work</h2>
+    <span class="proj-note">Every card downloads the actual file</span>
+  </div>
+  <div class="proj-grid">
+    <a class="proj reveal" href="files/Discounted Cash Flow (DCF) Valuation Model.xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Financial Modeling</span></div>
+      <div class="proj-name">Discounted Cash Flow (DCF) Valuation Model</div>
+      <div class="proj-skill">Skill: DCF Valuation</div>
+      <p class="proj-desc">Full DCF estimating intrinsic value of a public company — revenue projections, WACC, terminal value, and sensitivity analysis.</p>
+      <span class="proj-dl">Download model <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Portfolio Optimization & Efficient Frontier Analysis.xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Portfolio Theory</span></div>
+      <div class="proj-name">Portfolio Optimization &amp; Efficient Frontier</div>
+      <div class="proj-skill">Skill: Mean-Variance Optimization</div>
+      <p class="proj-desc">Mean-variance optimization across a multi-asset portfolio, using Solver to find the optimal risk-return tradeoff.</p>
+      <span class="proj-dl">Download model <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Fama-French Factor Analysis of Kellanova Stock Returns.docx" download>
+      <div class="proj-top"><span class="badge docx">DOCX</span><span class="proj-cat">Quantitative Finance</span></div>
+      <div class="proj-name">Fama-French Factor Analysis — Kellanova</div>
+      <div class="proj-skill">Skill: Multi-Factor Regression</div>
+      <p class="proj-desc">Three-factor regression decomposing Kellanova's stock returns into market, size, and value risk premiums.</p>
+      <span class="proj-dl">Download report <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Capital Market Regression Analysis Dashboard.xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Capital Markets</span></div>
+      <div class="proj-name">Capital Market Regression Dashboard</div>
+      <div class="proj-skill">Skill: Risk-Return Modeling</div>
+      <p class="proj-desc">Interactive Excel dashboard visualizing risk-return relationships across asset classes through regression analysis.</p>
+      <span class="proj-dl">Download dashboard <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Full Financial Statement Creation (Including Common Size).xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Financial Reporting</span></div>
+      <div class="proj-name">Full Financial Statements + Common-Size</div>
+      <div class="proj-skill">Skill: Financial Statement Analysis</div>
+      <p class="proj-desc">Complete statement set — income, balance sheet, cash flow — with integrated common-size ratios for comparison.</p>
+      <span class="proj-dl">Download workbook <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/ETF Return & Volatility Analysis.xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">ETF Analytics</span></div>
+      <div class="proj-name">ETF Return &amp; Volatility Analysis</div>
+      <div class="proj-skill">Skill: Risk-Adjusted Performance Analysis</div>
+      <p class="proj-desc">Risk-adjusted performance comparison across ETFs — rolling volatility, Sharpe ratios, and drawdown metrics.</p>
+      <span class="proj-dl">Download analysis <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Revenue Growth Projection & Valuation Model.xlsx" download>
+      <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Valuation</span></div>
+      <div class="proj-name">Revenue Growth Projection &amp; Valuation</div>
+      <div class="proj-skill">Skill: Revenue Forecasting</div>
+      <p class="proj-desc">Forward-looking growth and valuation model with scenario analysis and multiples-based valuation.</p>
+      <span class="proj-dl">Download model <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/The future of global trade.pptx" download>
+      <div class="proj-top"><span class="badge pptx">PPTX</span><span class="proj-cat">Strategy</span></div>
+      <div class="proj-name">The Future of Global Trade — AI &amp; Automation</div>
+      <div class="proj-skill">Skill: Macro &amp; Strategic Research</div>
+      <p class="proj-desc">AI's impact on global trade: supply chain optimization, smart manufacturing, digital trade flows, and regulation.</p>
+      <span class="proj-dl">Download deck <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Crypto Group Analysis and Case Study.pptx" download>
+      <div class="proj-top"><span class="badge pptx">PPTX</span><span class="proj-cat">Macro Finance</span></div>
+      <div class="proj-name">Crypto Analysis &amp; Case Study</div>
+      <div class="proj-skill">Skill: Monetary &amp; Economic Analysis</div>
+      <p class="proj-desc">Is crypto money? Bitcoin's origins, the 2008 crisis, and cryptocurrency judged by economic standards.</p>
+      <span class="proj-dl">Download deck <span class="arr">↓</span></span>
+    </a>
+    <a class="proj reveal" href="files/Museli SAP Simulation Assessment.pptx" download>
+      <div class="proj-top"><span class="badge pptx">PPTX</span><span class="proj-cat">Business Strategy</span></div>
+      <div class="proj-name">Muesli SAP Simulation Assessment</div>
+      <div class="proj-skill">Skill: Operations &amp; Supply Chain Strategy</div>
+      <p class="proj-desc">SAP business simulation assessing supply chain, operations, and financial decisions in a competitive market.</p>
+      <span class="proj-dl">Download deck <span class="arr">↓</span></span>
+    </a>
+
+    <div class="proj proj-feature reveal">
+      <div class="proj-top">
+        <span class="badge case">CASE STUDY</span>
+        <span class="proj-cat">Influencer Marketing · Campaign Analytics</span>
+      </div>
+      <div class="proj-name">BetterWild Influencer Campaign — Performance Analysis</div>
+      <div class="proj-skill">Skill: Campaign Analytics &amp; Data-Driven Strategy</div>
+      <p class="proj-desc">Cleaned and analyzed 200+ raw TikTok and Instagram creator posts into a weekly performance report — surfacing which platforms, creators, and content hooks actually drove engagement, then translating the findings into concrete recommendations for the brand's influencer program.</p>
+      <div class="proj-stats">
+        <div class="proj-stat"><div class="proj-stat-num">5–6×</div><div class="proj-stat-label">TikTok vs. Instagram like rate</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">42%</div><div class="proj-stat-label">Of campaign likes from top creator</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">20</div><div class="proj-stat-label">Shares on best-performing post</div></div>
+      </div>
+      <div class="proj-dl-row">
+        <a class="proj-dl-btn" href="files/BetterWild Weekly Performance Analysis.pdf" download>Download analysis ↓</a>
+        <a class="proj-dl-btn" href="files/BetterWild Campaign - Raw Creator Data.pdf" download>Download raw creator data ↓</a>
+      </div>
+    </div>
+
+    <div class="proj proj-feature reveal">
+      <div class="proj-top">
+        <span class="badge notion">NOTION · MOCK PROJECT</span>
+        <span class="proj-cat">Growth Marketing · Content Ops</span>
+      </div>
+      <div class="proj-name">SellScale Growth Dashboard &amp; Content Calendar (Mock)</div>
+      <div class="proj-skill">Skill: Growth Operations &amp; KPI Dashboarding</div>
+      <p class="proj-desc">A self-directed mock project modeled on SellScale — a Notion growth-ops hub with a sample KPI dashboard (website visits, LinkedIn impressions, email signups, and demos booked against weekly goals) paired with a full multi-channel content calendar spanning founder-led LinkedIn content, cold email sequences, podcast outreach, case studies, and blog posts. Metrics below are illustrative sample data.</p>
+      <div class="proj-stats">
+        <div class="proj-stat"><div class="proj-stat-num">23×</div><div class="proj-stat-label">Growth in demos booked over 5 weeks</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">100%</div><div class="proj-stat-label">Of LinkedIn impressions goal hit</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">6</div><div class="proj-stat-label">Growth experiments tracked live</div></div>
+      </div>
+      <div class="proj-dl-row">
+        <a class="proj-dl-btn" href="https://app.notion.com/p/Growth-DashBoard-38944e13e1e180a393eae7d18f951890?pvs=18" target="_blank" rel="noopener">View content calendar &amp; growth dashboard ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-head reveal">
+    <h2 class="sec-title"><span class="sec-num">04</span> Toolkit</h2>
+    <span class="mono">Finance × Marketing × AI</span>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skill-cell">
+      <div class="skill-title">Finance &amp; Analytics</div>
+      <div class="chips"><span class="chip">Bloomberg Terminal</span><span class="chip">Financial Modeling</span><span class="chip">DCF Valuation</span><span class="chip">Portfolio Optimization</span><span class="chip">Regression Analysis</span><span class="chip">Risk Management</span><span class="chip">Market Analysis</span><span class="chip">Financial Statement Analysis</span><span class="chip">Ratio Analysis</span><span class="chip">Comparable Company Analysis</span><span class="chip">Sensitivity Analysis</span><span class="chip">Capital Budgeting</span><span class="chip">Equity Research</span></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-title">Digital &amp; Marketing</div>
+      <div class="chips"><span class="chip">TikTok Ads Manager</span><span class="chip">Meta Ads Manager</span><span class="chip">A/B Testing</span><span class="chip">SEO</span><span class="chip">Content Strategy</span><span class="chip">Shopify</span><span class="chip">AutoDS</span><span class="chip">Influencer Marketing</span><span class="chip">UGC Strategy</span><span class="chip">Engagement Rate Analysis</span><span class="chip">CAC</span><span class="chip">ROAS</span><span class="chip">Top of Funnel Optimization</span><span class="chip">Attribution</span><span class="chip">Brand Positioning</span><span class="chip">Performance Marketing</span><span class="chip">DaVinci Resolve</span></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-title">Data &amp; AI Tools</div>
+      <div class="chips"><span class="chip">Advanced Excel</span><span class="chip">Tableau</span><span class="chip">SQL</span><span class="chip">Claude</span><span class="chip">ChatGPT</span><span class="chip">GitHub</span><span class="chip">Microsoft Office</span><span class="chip">Data Cleaning &amp; Structuring</span><span class="chip">Data Visualization</span><span class="chip">Google Sheets</span><span class="chip">Prompt Engineering</span><span class="chip">VS Code</span></div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-title">General Skills</div>
+      <div class="chips"><span class="chip">Collaboration</span><span class="chip">Adaptability</span><span class="chip">Coachable &amp; Fast Learner</span><span class="chip">Clear Communication</span><span class="chip">Attention to Detail</span><span class="chip">Time Management</span><span class="chip">Problem Solving</span><span class="chip">Ownership &amp; Follow-Through</span><span class="chip">Cross-Functional Teamwork</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="photo-band" id="photography">
+  <div class="photo-band-inner">
+    <div class="sec-head reveal">
+      <h2 class="sec-title"><span class="sec-num" style="color:var(--orange)">05</span> Off the desk</h2>
+      <span class="mono">Field notes · Sony Alpha</span>
+    </div>
+    <p class="photo-sub reveal">I'm also a nature photographer in my free time. Check out my creative work <a href="photography.html">here</a>.</p>
+  </div>
+  <div class="photo-strip-wrap reveal">
+    <div class="photo-strip" id="photo-strip">
+      <a href="photography.html"><img src="photos/DSC09191.jpeg" alt="Winter alpenglow on Half Dome, Yosemite" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC01559.jpeg" alt="Camel caravan shadows, Sahara Desert" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC02928.jpeg" alt="Mount Etna above the coast, Taormina" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC02469.jpeg" alt="The Blue Lagoon, Comino, Malta" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC00559.jpeg" alt="The Matterhorn, Zermatt" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC06160.jpeg" alt="Midtown Manhattan at night" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC05209.jpeg" alt="Tegalalang rice terraces, Bali" loading="lazy"></a>
+      <a href="photography.html"><img src="photos/DSC04163.jpeg" alt="McWay Falls, Big Sur" loading="lazy"></a>
+    </div>
+  </div>
+  <div class="photo-band-inner" style="padding-top:0">
+    <div class="photo-band-foot reveal">
+      <p>Landscape and travel photography from four continents — Yosemite to the Sahara, Big Sur to Budapest. Where precision meets creativity.</p>
+      <a class="btn-photo" href="photography.html">Enter the darkroom →</a>
+    </div>
+  </div>
+</div>
+
+<section id="education">
+  <div class="sec-head reveal">
+    <h2 class="sec-title"><span class="sec-num">06</span> Education</h2>
+    <span class="mono">+ Certifications</span>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card reveal">
+      <div class="when">2022 — Dec 2026</div>
+      <h3>San Diego State University</h3>
+      <div class="sub">BS Business Administration, Finance · Dean's List</div>
+      <p>Financial Modeling, Intermediate Finance, Risk Management &amp; Insurance, Managerial Economics, Financial/Managerial Accounting, Financial Law, Marketing, Micro/Macro Economics.</p>
+    </div>
+    <div class="edu-card reveal">
+      <div class="when">Jan — May 2026</div>
+      <h3>Universitat Autònoma de Barcelona</h3>
+      <div class="sub">Exchange — International Business</div>
+      <p>International coursework in Barcelona, Spain — cross-cultural collaboration and global business perspectives.</p>
+    </div>
+    <div class="edu-card reveal">
+      <div class="when">Certification</div>
+      <h3>Bloomberg Market Concepts</h3>
+      <div class="sub">Bloomberg Terminal</div>
+      <p>Terminal proficiency across equities, fixed income, currencies, and economic indicators.</p>
+    </div>
+    <div class="edu-card reveal">
+      <div class="when">Simulation</div>
+      <h3>J.P. Morgan Investment Banking</h3>
+      <div class="sub">Job Simulation</div>
+      <p>Hands-on financial analysis, valuation, and deal execution workflows.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="sec-head reveal">
+    <h2 class="sec-title"><span class="sec-num">07</span> Let's connect</h2>
+    <span class="mono">Open to relocation</span>
+  </div>
+  <a class="contact-big reveal" href="mailto:Nikolas.carruthers@gmail.com">nikolas.carruthers@gmail.com&nbsp;→</a>
+  <p class="contact-sub reveal">Open to internship opportunities in finance, investment banking, fintech, growth marketing, and AI — with a strong pull toward startups and early-stage teams. Based in San Diego — happy to relocate for the right team.</p>
+  <div class="contact-row reveal">
+    <button class="btn btn-solid" id="copy-email" type="button"><span class="copy-label">Copy email</span></button>
+    <a class="btn btn-ghost" href="https://www.linkedin.com/in/nikolascarruthers" target="_blank" rel="noopener">LinkedIn ↗</a>
+    <a class="btn btn-ghost" href="tel:+16192511891">(619) 251-1891</a>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">© 2026 Nikolas Carruthers</span>
+  <span class="mono">San Diego, CA · SDSU Finance '26</span>
+</footer>
+
+<script>
+  /* ---------- CUSTOM CURSOR: bull silhouette, spring-follow ---------- */
+  (function customCursor() {
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.documentElement.classList.add('cursor-custom');
+    const el = document.createElement('div');
+    el.className = 'cursor-icon';
+    el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 20.5c-3.3 0-5.6-2.6-5.6-6 0-.5 0-1 .1-1.4-2.6-.2-4.6-1.7-5.4-4C3 9.9 5 11 7 12c-.4-1.1-.4-2.4.2-3.6C8.9 10.6 10.4 11.4 12 11.4s3.1-.8 4.8-3c.6 1.2.6 2.5.2 3.6 2-1 4-2.1 5.9-2.9-.8 2.3-2.8 3.8-5.4 4 .1.4.1.9.1 1.4 0 3.4-2.3 6-5.6 6Z"/></svg>';
+    document.body.appendChild(el);
+    const SEL = 'a, button, .btn, .proj, .proj-feature, .chip, .frame, .loc-link, [role="button"], input, textarea, select';
+    let mx = innerWidth / 2, my = innerHeight / 2, x = mx, y = my;
+    let hover = false, down = false, shown = false;
+    addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      if (!shown) { shown = true; x = mx; y = my; el.style.opacity = 1; }
+      hover = !!(e.target.closest && e.target.closest(SEL));
+    }, { passive: true });
+    addEventListener('mousedown', () => down = true, { passive: true });
+    addEventListener('mouseup', () => down = false, { passive: true });
+    addEventListener('mouseout', e => { if (!e.relatedTarget) el.style.opacity = 0; }, { passive: true });
+    (function loop() {
+      const k = reduce ? 1 : 0.4;
+      x += (mx - x) * k; y += (my - y) * k;
+      const s = (hover ? 1.3 : 1) * (down ? 0.82 : 1);
+      el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+      requestAnimationFrame(loop);
+    })();
+  })();
+
+  // nav border on scroll
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 12), { passive: true });
+
+  // duplicate marquee tracks so translateX(-50%) loops seamlessly
+  for (const id of ['ticker-track', 'photo-strip']) {
+    const t = document.getElementById(id);
+    t.innerHTML += t.innerHTML;
+  }
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp01 = v => Math.min(1, Math.max(0, v));
+
+  /* ============================================================
+     SCROLL-DRIVEN HERO — the market opens as you scroll
+     ============================================================ */
+  const track = document.getElementById('top');
+  const chartSvg = document.getElementById('hero-chart');
+  const heroDot = document.getElementById('hero-dot');
+  const priceTag = document.getElementById('price-tag');
+  const ptDelta = document.getElementById('pt-delta');
+  const hudPrice = document.getElementById('hud-price');
+  const hudDelta = document.getElementById('hud-delta');
+  const heroSub = document.getElementById('hero-sub');
+  const heroName = document.getElementById('hero-name');
+  const scrollCue = document.getElementById('scroll-cue');
+
+  // deterministic upward random walk: open 4.20 → close 26.20 (grad Dec '26)
+  const NS = 'http://www.w3.org/2000/svg';
+  const CW = 1000, CH = 520, N = 34;
+  let seed = 7;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const ohlc = [];
+  let v = 12;
+  for (let i = 0; i < N; i++) {
+    const open = v;
+    const close = Math.max(4, open + 2.2 + (rand() - 0.42) * 8);
+    ohlc.push({ open, close, hi: Math.max(open, close) + rand() * 3, lo: Math.min(open, close) - rand() * 3 });
+    v = close;
+  }
+  let vmin = Infinity, vmax = -Infinity;
+  ohlc.forEach(c => { vmin = Math.min(vmin, c.lo); vmax = Math.max(vmax, c.hi); });
+  const yOf = val => CH - ((val - vmin) / (vmax - vmin)) * (CH * 0.8) - CH * 0.05;
+  const xOf = i => (i + 0.5) * (CW / N);
+
+  // build chart inside a clip group — the clip sweep is the scroll scrub
+  const defs = document.createElementNS(NS, 'defs');
+  defs.innerHTML = `
+    <clipPath id="heroClip"><rect id="hero-clip-rect" x="0" y="0" width="0" height="${CH}"/></clipPath>
+    <linearGradient id="heroFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0e8a56" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0e8a56" stop-opacity="0"/>
+    </linearGradient>`;
+  chartSvg.appendChild(defs);
+  const g = document.createElementNS(NS, 'g');
+  g.setAttribute('clip-path', 'url(#heroClip)');
+  const cwHalf = (CW / N) * 0.26;
+  let lineD = '', areaD = '';
+  ohlc.forEach((c, i) => {
+    const x = xOf(i);
+    const wick = document.createElementNS(NS, 'line');
+    wick.setAttribute('class', 'wick');
+    wick.setAttribute('x1', x); wick.setAttribute('x2', x);
+    wick.setAttribute('y1', yOf(c.hi)); wick.setAttribute('y2', yOf(c.lo));
+    g.appendChild(wick);
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('class', 'candle ' + (c.close >= c.open ? 'up' : 'dn'));
+    rect.setAttribute('x', x - cwHalf);
+    rect.setAttribute('width', cwHalf * 2);
+    rect.setAttribute('y', Math.min(yOf(c.open), yOf(c.close)));
+    rect.setAttribute('height', Math.max(2, Math.abs(yOf(c.open) - yOf(c.close))));
+    g.appendChild(rect);
+    lineD += (i ? ' L' : 'M') + x.toFixed(1) + ' ' + yOf(c.close).toFixed(1);
+  });
+  areaD = lineD + ` L${xOf(N - 1).toFixed(1)} ${CH} L${xOf(0).toFixed(1)} ${CH} Z`;
+  const area = document.createElementNS(NS, 'path');
+  area.setAttribute('class', 'parea'); area.setAttribute('d', areaD); area.setAttribute('fill', 'url(#heroFill)');
+  g.appendChild(area);
+  const pline = document.createElementNS(NS, 'path');
+  pline.setAttribute('class', 'pline'); pline.setAttribute('d', lineD);
+  g.appendChild(pline);
+  chartSvg.appendChild(g);
+  const clipRect = document.getElementById('hero-clip-rect');
+
+  // point on the close-line at a given x (for the dot + price tag)
+  function pointAt(xTarget) {
+    let i = Math.min(N - 2, Math.max(0, Math.floor(xTarget / (CW / N) - 0.5)));
+    const x1 = xOf(i), x2 = xOf(i + 1);
+    const t = clamp01((xTarget - x1) / (x2 - x1));
+    const y = yOf(ohlc[i].close) + (yOf(ohlc[i + 1].close) - yOf(ohlc[i].close)) * t;
+    return { x: xTarget, y };
+  }
+
+  const P_OPEN = 4.20, P_CLOSE = 26.20;
+  let lastP = -1, flickerOn = false;
+
+  function renderHero(p) {
+    const lineP = reduceMotion ? 1 : clamp01((p - 0.04) / 0.68);
+    const eased = 1 - Math.pow(1 - lineP, 2);
+    // clip sweep reveals candles + line together
+    const xEdge = Math.max(xOf(0), eased * CW);
+    clipRect.setAttribute('width', xEdge);
+    // dot + price tag ride the line tip
+    const pt = pointAt(Math.min(xEdge, xOf(N - 1)));
+    const lp = (pt.x / CW * 100) + '%', tp = (pt.y / CH * 100) + '%';
+    heroDot.style.left = lp; heroDot.style.top = tp;
+    const wrapW = chartSvg.clientWidth || 1;
+    const tagHalf = priceTag.offsetWidth / 2 + 8;
+    priceTag.style.left = Math.min(wrapW - tagHalf, Math.max(tagHalf, pt.x / CW * wrapW)) + 'px';
+    priceTag.style.top = tp;
+    // live price readout
+    const price = P_OPEN + (P_CLOSE - P_OPEN) * eased;
+    const delta = (price / P_OPEN - 1) * 100;
+    priceTag.childNodes[0].nodeValue = 'NC $' + price.toFixed(2) + ' ';
+    ptDelta.textContent = '▲ +' + delta.toFixed(1) + '%';
+    hudPrice.textContent = '$' + price.toFixed(2);
+    hudDelta.textContent = '▲ +' + delta.toFixed(1) + '%';
+    // name parallax + sub reveal + cue fade
+    heroName.style.transform = 'translateY(' + (-p * 28) + 'px)';
+    const sub = reduceMotion ? 1 : clamp01((p - 0.55) / 0.25);
+    heroSub.style.opacity = sub;
+    heroSub.style.transform = 'translateY(' + (26 * (1 - sub)) + 'px)';
+    scrollCue.style.opacity = 1 - clamp01(p / 0.06);
+    flickerOn = lineP >= 1;
+  }
+
+  // subtle live tick once the market is "open"
+  if (!reduceMotion) {
+    setInterval(() => {
+      if (!flickerOn) return;
+      const jit = (Math.random() - 0.45) * 0.08;
+      const price = P_CLOSE + jit;
+      const up = jit >= 0;
+      hudPrice.textContent = '$' + price.toFixed(2);
+      hudDelta.textContent = (up ? '▲ +' : '▼ +') + ((price / P_OPEN - 1) * 100).toFixed(1) + '%';
+      hudDelta.className = up ? 'up' : 'dn';
+      priceTag.childNodes[0].nodeValue = 'NC $' + price.toFixed(2) + ' ';
+    }, 900);
+  }
+
+  // scroll progress bar
+  const pbar = document.createElement('div');
+  pbar.className = 'scroll-progress';
+  document.body.appendChild(pbar);
+
+  let rafPending = false;
+  function onScrollFrame() {
+    rafPending = false;
+    const max = Math.max(1, track.offsetHeight - innerHeight);
+    const p = reduceMotion ? 1 : clamp01(scrollY / max);
+    if (p !== lastP) { renderHero(p); lastP = p; }
+    const docMax = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    pbar.style.transform = 'scaleX(' + clamp01(scrollY / docMax) + ')';
+  }
+  addEventListener('scroll', () => {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(onScrollFrame); }
+  }, { passive: true });
+  addEventListener('resize', () => {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(onScrollFrame); }
+  }, { passive: true });
+  renderHero(reduceMotion ? 1 : 0);
+  onScrollFrame();
+
+  /* ============================================================
+     SCROLL REVEALS — pop-in cards, slide-in rows, chip cascade
+     ============================================================ */
+  document.querySelectorAll('.proj, .edu-card, .stats, .skills-grid, .photo-strip-wrap').forEach(el => el.classList.add('pop'));
+  document.querySelectorAll('.exp-row').forEach(el => el.classList.add('slide-l'));
+
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target;
+      const siblings = [...el.parentElement.children].filter(c => c.classList.contains('reveal') && !c.classList.contains('in'));
+      const i = Math.max(0, siblings.indexOf(el));
+      el.style.transitionDelay = reduceMotion ? '0ms' : Math.min(i * 60, 300) + 'ms';
+      el.classList.add('in');
+      // cascade any chips inside
+      el.querySelectorAll('.chip').forEach((c, ci) => {
+        c.style.transitionDelay = reduceMotion ? '0ms' : Math.min(ci * 26, 700) + 'ms';
+        c.classList.add('chip-in');
+      });
+      io.unobserve(el);
+    }
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // count-up stats
+  const cio = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      cio.unobserve(e.target);
+      const el = e.target, end = +el.dataset.count;
+      const pre = el.dataset.prefix || '', suf = el.dataset.suffix || '';
+      if (reduceMotion) { el.textContent = pre + end + suf; continue; }
+      const t0 = performance.now(), dur = 900;
+      (function tick(now) {
+        const p = Math.min((now - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 4);
+        el.textContent = pre + Math.round(end * eased) + suf;
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+  }, { threshold: 0.4 });
+  document.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
+
+  // copy email with blur-masked label morph
+  const copyBtn = document.getElementById('copy-email');
+  const label = copyBtn.querySelector('.copy-label');
+  let copyTimer;
+  copyBtn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText('nikolas.carruthers@gmail.com'); } catch {}
+    copyBtn.classList.add('copying');
+    setTimeout(() => { label.textContent = 'Copied ✓'; copyBtn.classList.remove('copying'); }, 180);
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copyBtn.classList.add('copying');
+      setTimeout(() => { label.textContent = 'Copy email'; copyBtn.classList.remove('copying'); }, 180);
+    }, 1800);
+  });
+</script>
+</body>
+</html>

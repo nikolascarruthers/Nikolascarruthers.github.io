@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Darkroom — Nikolas Carruthers</title>
+<meta name="description" content="Landscape and travel photography by Nikolas Carruthers — Yosemite, Big Sur, the Sahara, Sicily, Malta, Indonesia, Iberia, the Alps, Budapest, and New York.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0d0a;
+    --bg-2: #16140f;
+    --text: #e9e6da;
+    --text-dim: #96927f;
+    --text-faint: #5c584a;
+    --amber: #e8541e;
+    --green: #2fae74;
+    --line: rgba(233,230,218,0.14);
+    --display: 'Space Grotesk', system-ui, sans-serif;
+    --body: 'Inter', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--body); font-size: 16px; line-height: 1.6;
+    overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--amber); color: #fff; }
+
+  /* ---------- CUSTOM CURSOR (camera silhouette) ---------- */
+  .cursor-icon {
+    position: fixed; top: 0; left: 0; z-index: 9999;
+    width: 28px; height: 28px; margin: -14px 0 0 -14px;
+    pointer-events: none; mix-blend-mode: difference;
+    opacity: 0; transition: opacity 0.25s ease;
+    will-change: transform;
+  }
+  .cursor-icon svg { width: 100%; height: 100%; display: block; fill: #fff; }
+  @media (hover: hover) and (pointer: fine) {
+    html.cursor-custom, html.cursor-custom * { cursor: none !important; }
+  }
+  @media (hover: none), (pointer: coarse) {
+    .cursor-icon { display: none; }
+  }
+
+  .mono { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px; padding: 0 clamp(1.25rem, 4vw, 3rem);
+    background: rgba(14,13,10,0.8);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 250ms ease;
+  }
+  nav.scrolled { border-bottom-color: var(--line); }
+  nav a { text-decoration: none; }
+  .nav-back {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim);
+    transition: color 150ms ease, transform 160ms var(--ease-out);
+    display: inline-block;
+  }
+  .nav-back:active { transform: scale(0.96); }
+  @media (hover: hover) and (pointer: fine) { .nav-back:hover { color: var(--amber); } }
+  .nav-title { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.14em; color: var(--text); }
+  .nav-title .cam { color: var(--text-faint); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 88svh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 6rem clamp(1.25rem, 4vw, 3rem) 3rem;
+    max-width: 1400px; margin: 0 auto; width: 100%;
+    position: relative;
+  }
+  .hero-kicker { color: var(--amber); display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.5rem; }
+  .hero-kicker::before { content: ''; width: 26px; height: 1px; background: var(--amber); display: inline-block; }
+  h1 {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(3.2rem, 11vw, 9.5rem);
+    line-height: 0.95; letter-spacing: -0.03em; text-transform: uppercase;
+  }
+  .h1-line { display: block; overflow: hidden; }
+  .h1-line > span { display: block; transform: translateY(112%); animation: rise 800ms var(--ease-out) forwards; }
+  .h1-line:nth-child(2) > span { animation-delay: 90ms; color: transparent; -webkit-text-stroke: 1.5px var(--text); }
+  @keyframes rise { to { transform: translateY(0); } }
+  .hero-meta {
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap;
+    margin-top: 2rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
+    opacity: 0; transform: translateY(12px); animation: fadeUp 700ms var(--ease-out) 300ms forwards;
+  }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+  .hero-meta p { max-width: 480px; color: var(--text-dim); font-size: 0.95rem; }
+  .hero-meta .mono { color: var(--text-faint); }
+
+  /* ---------- LOCATION INDEX ---------- */
+  .index-wrap { max-width: 1400px; margin: 0 auto; padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem); }
+  .index-head { margin-bottom: 2rem; color: var(--text-faint); }
+  .loc-list { list-style: none; border-top: 1px solid var(--line); }
+  .loc-item { border-bottom: 1px solid var(--line); }
+  .loc-link {
+    display: grid; grid-template-columns: 3.2rem minmax(0,1fr) auto;
+    align-items: baseline; gap: 1.25rem;
+    padding: 1.35rem 0.25rem; text-decoration: none; cursor: pointer;
+  }
+  .loc-num { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); }
+  .loc-name {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(1.5rem, 3.8vw, 2.8rem);
+    letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.05;
+    color: var(--text-dim);
+    transition: color 200ms ease, transform 300ms var(--ease-out);
+    transform-origin: left center; display: inline-block;
+  }
+  .loc-meta { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); text-align: right; }
+  @media (hover: hover) and (pointer: fine) {
+    .loc-link:hover .loc-name { color: var(--text); transform: translateX(10px); }
+    .loc-link:hover .loc-num { color: var(--amber); }
+  }
+
+  /* cursor-following preview */
+  .loc-preview {
+    position: fixed; top: 0; left: 0; z-index: 90;
+    width: min(320px, 26vw); aspect-ratio: 3 / 2;
+    pointer-events: none; overflow: hidden;
+    opacity: 0; transform: translate(-50%, -50%) scale(0.9);
+    transition: opacity 250ms var(--ease-out);
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -12px rgba(0,0,0,0.7);
+  }
+  .loc-preview.on { opacity: 1; }
+  .loc-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 200ms ease; }
+  .loc-preview img.show { opacity: 1; }
+
+  /* ---------- COLLECTIONS ---------- */
+  .collection { max-width: 1400px; margin: 0 auto; padding: clamp(3.5rem, 7vw, 6rem) clamp(1.25rem, 4vw, 3rem) 1rem; scroll-margin-top: 40px; }
+  .col-head { display: flex; align-items: baseline; gap: 1.25rem; margin-bottom: 0.5rem; }
+  .col-num { font-family: var(--mono); font-size: 0.75rem; color: var(--amber); }
+  .col-title { font-family: var(--display); font-weight: 600; font-size: clamp(1.9rem, 4.5vw, 3.4rem); letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.05; }
+  .col-sub { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); margin: 0.6rem 0 2.2rem; padding-left: calc(0.75rem + 1.25rem + 2ch); }
+
+  .sheet { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; grid-auto-flow: dense; }
+  @media (max-width: 1024px) { .sheet { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px)  { .sheet { grid-template-columns: repeat(2, 1fr); } }
+
+  .frame { position: relative; cursor: zoom-in; background: var(--bg-2); border: none; padding: 0; text-align: inherit; }
+  .frame.portrait { grid-row: span 2; }
+  .frame-img-wrap { position: relative; overflow: hidden; height: 100%; }
+  .frame img {
+    display: block; width: 100%; height: 100%; object-fit: cover;
+    aspect-ratio: 3 / 2;
+    transition: transform 500ms var(--ease-out), filter 350ms ease;
+  }
+  .frame.portrait img { aspect-ratio: auto; min-height: 100%; }
+  @media (hover: hover) and (pointer: fine) {
+    .frame:hover img { transform: scale(1.04); }
+  }
+  .frame-tag {
+    position: absolute; left: 10px; bottom: 10px; z-index: 2;
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(233,230,218,0.92);
+    background: rgba(14,13,10,0.62); backdrop-filter: blur(6px);
+    padding: 0.3rem 0.55rem;
+    display: flex; gap: 0.6rem;
+  }
+  .frame-tag .no { color: var(--amber); }
+  @media (hover: hover) and (pointer: fine) {
+    .frame .frame-tag { opacity: 0; transform: translateY(6px); transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out); }
+    .frame:hover .frame-tag { opacity: 1; transform: translateY(0); }
+  }
+
+  /* clip-path scroll reveal */
+  .frame-reveal { clip-path: inset(0 0 100% 0); }
+  .frame-reveal.in { clip-path: inset(0 0 0 0); transition: clip-path 700ms var(--ease-out); }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 500;
+    display: flex; flex-direction: column;
+    background: rgba(10,9,7,0.94);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .lightbox.open { opacity: 1; pointer-events: auto; }
+  .lb-stage { flex: 1; display: flex; align-items: center; justify-content: center; padding: 4.5rem 4rem 1rem; min-height: 0; }
+  .lb-stage img {
+    max-width: 100%; max-height: 100%; display: block;
+    transform: scale(0.96); opacity: 0;
+    transition: transform 220ms var(--ease-out), opacity 220ms var(--ease-out);
+    box-shadow: 0 30px 90px -20px rgba(0,0,0,0.8);
+  }
+  .lightbox.open .lb-stage img.ready { transform: scale(1); opacity: 1; }
+  .lb-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: 1rem clamp(1.25rem, 4vw, 3rem) 1.4rem;
+  }
+  .lb-caption { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+  .lb-caption .place { color: var(--text); }
+  .lb-count { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; color: var(--text-faint); }
+  .lb-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--text); width: 46px; height: 46px; cursor: pointer;
+    font-size: 1.1rem; line-height: 1;
+    transition: background 150ms ease, transform 160ms var(--ease-out);
+    z-index: 2;
+  }
+  .lb-btn:active { transform: translateY(-50%) scale(0.94); }
+  @media (hover: hover) and (pointer: fine) { .lb-btn:hover { background: rgba(233,230,218,0.12); } }
+  .lb-prev { left: 1.1rem; }
+  .lb-next { right: 1.1rem; }
+  .lb-close {
+    position: absolute; top: 1rem; right: 1.1rem; z-index: 2;
+    background: none; border: 1px solid var(--line); border-radius: 999px;
+    color: var(--text); width: 42px; height: 42px; cursor: pointer; font-size: 1rem;
+    transition: background 150ms ease, transform 160ms var(--ease-out);
+  }
+  .lb-close:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) { .lb-close:hover { background: rgba(232,84,30,0.25); } }
+  @media (max-width: 640px) { .lb-stage { padding: 4rem 0.75rem 0.5rem; } .lb-prev { left: 0.5rem; } .lb-next { right: 0.5rem; } }
+
+  /* ---------- DEVELOPING (empty state) ---------- */
+  .developing {
+    max-width: 1400px; margin: 0 auto;
+    padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem);
+    text-align: center;
+  }
+  .dev-strip-wrap { overflow: hidden; margin: 0 auto 3.5rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .dev-strip {
+    display: inline-flex; gap: 14px; padding: 1.1rem 0;
+    animation: dev-marquee 30s linear infinite;
+    will-change: transform;
+  }
+  @keyframes dev-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .dev-frame {
+    flex-shrink: 0; width: 220px; aspect-ratio: 3 / 2;
+    border: 1px dashed rgba(233,230,218,0.25);
+    background:
+      radial-gradient(circle, rgba(233,230,218,0.22) 2px, transparent 2.5px) 0 4px / 18px 10px repeat-x,
+      radial-gradient(circle, rgba(233,230,218,0.22) 2px, transparent 2.5px) 0 calc(100% - 4px) / 18px 10px repeat-x,
+      var(--bg-2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dev-frame span { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; color: var(--text-faint); }
+  .dev-kicker { color: var(--amber); margin-bottom: 1.2rem; }
+  .dev-title {
+    font-family: var(--display); font-weight: 600;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.05;
+    margin-bottom: 1.4rem;
+  }
+  .dev-sub { color: var(--text-dim); max-width: 520px; margin: 0 auto; font-size: 0.98rem; }
+
+  /* ---------- OUTRO ---------- */
+  .outro { max-width: 1400px; margin: 0 auto; padding: clamp(5rem, 10vw, 8rem) clamp(1.25rem, 4vw, 3rem); text-align: center; }
+  .outro .mono { color: var(--text-faint); }
+  .outro-cta {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--bg); background: var(--text); text-decoration: none;
+    padding: 0.95rem 1.7rem; border-radius: 999px;
+    transition: transform 160ms var(--ease-out), background 150ms ease, color 150ms ease;
+  }
+  .outro-cta:active { transform: scale(0.96); }
+  @media (hover: hover) and (pointer: fine) { .outro-cta:hover { background: var(--amber); color: #fff; } }
+
+  footer {
+    border-top: 1px solid var(--line);
+    max-width: 1400px; margin: 0 auto;
+    padding: 1.5rem clamp(1.25rem, 4vw, 3rem) 2rem;
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  footer .mono { color: var(--text-faint); }
+  footer a { color: var(--text-dim); text-decoration: none; transition: color 150ms ease; }
+  @media (hover: hover) and (pointer: fine) { footer a:hover { color: var(--amber); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .h1-line > span { transform: none; animation: none; }
+    .hero-meta { opacity: 1; transform: none; animation: none; }
+    .frame-reveal { clip-path: none; }
+    .frame-reveal.in { transition: none; }
+    .dev-strip { animation: none; }
+    .frame img { transition: none; }
+    .loc-preview { display: none; }
+    .lb-stage img { transition: opacity 200ms ease; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-back" href="index.html">← Back to portfolio</a>
+  <span class="nav-title">THE DARKROOM <span class="cam">· SONY ALPHA</span></span>
+</nav>
+
+<header class="hero">
+  <p class="hero-kicker mono">Field notes · 2020 — 2026</p>
+  <h1>
+    <span class="h1-line"><span>Through</span></span>
+    <span class="h1-line"><span>the lens</span></span>
+  </h1>
+  <div class="hero-meta">
+    <p>Landscape and travel photography from four continents. Every frame is a decision — the same patience and precision I bring to a financial model, pointed at the world instead.</p>
+    <span class="mono" id="hero-count">New scans in development</span>
+  </div>
+</header>
+
+<div class="index-wrap" id="index-wrap" hidden>
+  <p class="index-head mono">Index — hover to preview, select to jump</p>
+  <ul class="loc-list" id="loc-list"></ul>
+</div>
+
+<div class="developing" id="developing" hidden>
+  <div class="dev-strip-wrap" aria-hidden="true">
+    <div class="dev-strip" id="dev-strip">
+      <div class="dev-frame"><span>FR 01</span></div>
+      <div class="dev-frame"><span>FR 02</span></div>
+      <div class="dev-frame"><span>FR 03</span></div>
+      <div class="dev-frame"><span>FR 04</span></div>
+      <div class="dev-frame"><span>FR 05</span></div>
+      <div class="dev-frame"><span>FR 06</span></div>
+    </div>
+  </div>
+  <p class="dev-kicker mono">◉ Film in development</p>
+  <h2 class="dev-title">The contact sheets<br>are being printed.</h2>
+  <p class="dev-sub">A fresh set of scans is on its way to the darkroom. Check back soon — or reach out below and I'll send you the prints first.</p>
+</div>
+
+<div class="loc-preview" id="loc-preview" aria-hidden="true"></div>
+
+<main id="collections"></main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lb-prev" aria-label="Previous photo">←</button>
+  <button class="lb-btn lb-next" id="lb-next" aria-label="Next photo">→</button>
+  <div class="lb-stage"><img id="lb-img" src="" alt=""></div>
+  <div class="lb-bar">
+    <span class="lb-caption" id="lb-caption"></span>
+    <span class="lb-count" id="lb-count"></span>
+  </div>
+</div>
+
+<section class="outro">
+  <span class="mono">Closing frame</span>
+  <a class="outro-cta" href="index.html#contact" style="margin-top:1.6rem">Work with me →</a>
+</section>
+
+<footer>
+  <span class="mono">© 2026 Nikolas Carruthers</span>
+  <a class="mono" href="mailto:Nikolas.carruthers@gmail.com">Nikolas.carruthers@gmail.com</a>
+</footer>
+
+<script>
+  /* ---------- CUSTOM CURSOR: camera silhouette, spring-follow ---------- */
+  (function customCursor() {
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.documentElement.classList.add('cursor-custom');
+    const el = document.createElement('div');
+    el.className = 'cursor-icon';
+    el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8.7 4h6.6l1.5 2H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.2l1.5-2ZM12 9.2a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/></svg>';
+    document.body.appendChild(el);
+    const SEL = 'a, button, .frame, .loc-link, .lb-btn, .lb-close, [role="button"]';
+    let mx = innerWidth / 2, my = innerHeight / 2, x = mx, y = my;
+    let hover = false, down = false, shown = false;
+    addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      if (!shown) { shown = true; x = mx; y = my; el.style.opacity = 1; }
+      hover = !!(e.target.closest && e.target.closest(SEL));
+    }, { passive: true });
+    addEventListener('mousedown', () => down = true, { passive: true });
+    addEventListener('mouseup', () => down = false, { passive: true });
+    addEventListener('mouseout', e => { if (!e.relatedTarget) el.style.opacity = 0; }, { passive: true });
+    (function loop() {
+      const k = reduce ? 1 : 0.4;
+      x += (mx - x) * k; y += (my - y) * k;
+      const s = (hover ? 1.3 : 1) * (down ? 0.82 : 1);
+      el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
+      requestAnimationFrame(loop);
+    })();
+  })();
+
+  /*
+   * HOW TO ADD PHOTOS
+   * 1. Drop image files into the photos/ folder (JPEG, ~1600px long edge works well).
+   * 2. Add a collection object below. Each photo is:
+   *      ['filename.jpg', 'Caption', 'Location']         → landscape
+   *      ['filename.jpg', 'Caption', 'Location', 'p']    → portrait (spans 2 rows)
+   *
+   * Example:
+   *   {
+   *     id: 'sierra', title: 'Yosemite & High Sierra', region: 'California, USA',
+   *     photos: [
+   *       ['DSC09191.jpeg', 'Half Dome alpenglow', 'Glacier Point'],
+   *       ['DSC05267.jpg', 'Alpine lake at dusk', 'High Sierra', 'p']
+   *     ]
+   *   }
+   */
+  const COLLECTIONS = [
+    {
+      id: "yosemite", title: "Yosemite", region: "California, USA",
+      photos: [
+        ["DSC09218.jpeg", "Tunnel View above the fog", "Yosemite Valley"],
+        ["DSC09191.jpeg", "Winter alpenglow on Half Dome", "Yosemite"],
+        ["DSC09118.jpeg", "On the granite edge", "Yosemite rim"],
+        ["DSC09183.jpeg", "Last sun over the valley", "Yosemite"],
+        ["DSC09106.jpeg", "Half Dome in winter", "Glacier Point"],
+        ["DSC04397.jpeg", "Spring runoff from Tunnel View", "Yosemite Valley"],
+        ["DSC04717.jpeg", "El Capitan at dusk", "El Capitan Meadow"],
+        ["DSC09663.jpeg", "Campfire in the snow", "Yosemite backcountry"]
+      ]
+    },
+    {
+      id: "sierra", title: "High Sierra", region: "Tioga Pass & the backcountry",
+      photos: [
+        ["DSC06592.jpeg", "Alpenglow reflections", "Tioga Pass"],
+        ["DSC06633.jpeg", "Casting at golden hour", "Tuolumne River"],
+        ["DSC06655.jpeg", "A buck crossing the shallows", "High Sierra"],
+        ["DSC06430.jpeg", "Trail along the lakeshore", "High Sierra"],
+        ["DSC06523.jpeg", "Wildflowers at the water's edge", "High Sierra", "p"],
+        ["DSC04537.jpeg", "Mirror lake at first light", "High Sierra"],
+        ["DSC06839.jpeg", "Twilight over the pass", "Tioga Pass"],
+        ["DSC06381.jpeg", "The Milky Way from camp", "High Sierra"],
+        ["DSC06554.jpeg", "Emerald water beneath the cirque", "High Sierra"],
+        ["DSC06798.jpeg", "Last light on the tarn", "High Sierra"],
+        ["DSC06815.jpeg", "Evening walk along the shore", "High Sierra"],
+        ["DSC06868.jpeg", "Blue hour, waxing moon", "High Sierra", "p"],
+        ["DSC08974.jpeg", "Snowfall in the pines", "High Sierra", "p"]
+      ]
+    },
+    {
+      id: "coast", title: "California Coast", region: "Big Sur \u00b7 San Diego",
+      photos: [
+        ["DSC04163.jpeg", "McWay Falls", "Big Sur"],
+        ["DSC03707.jpeg", "Where the mountains meet the sea", "Big Sur"],
+        ["DSC03995.jpeg", "The rope swing at sunset", "Big Sur"],
+        ["DSC03855.jpeg", "Lone oak over the marine layer", "Big Sur"],
+        ["DSC04152.jpeg", "Golden haze on the ridgeline", "Big Sur"],
+        ["DSC09000.jpeg", "Sunset over the Pacific", "San Diego", "p"]
+      ]
+    },
+    {
+      id: "morocco", title: "Morocco", region: "Erg Chebbi \u00b7 Middle Atlas \u00b7 F\u00e8s",
+      photos: [
+        ["DSC01559.jpeg", "Caravan shadows", "Erg Chebbi"],
+        ["DSC01788.jpeg", "Riders at first light", "Sahara Desert"],
+        ["DSC01612.jpeg", "Camels resting in the dunes", "Erg Chebbi"],
+        ["DSC01586.jpeg", "Sandboarding the big dune", "Erg Chebbi"],
+        ["DSC01626.jpeg", "Eyes in crimson", "Sahara Desert"],
+        ["DSC01690.jpeg", "Turquoise in the dunes", "Sahara Desert"],
+        ["DSC01848.jpeg", "Barbary macaque", "Middle Atlas", "p"],
+        ["DSC01893.jpeg", "The tanneries of F\u00e8s", "F\u00e8s"]
+      ]
+    },
+    {
+      id: "sicily-malta", title: "Sicily & Malta", region: "Taormina \u00b7 Etna \u00b7 Valletta \u00b7 Comino",
+      photos: [
+        ["DSC02928.jpeg", "Etna above the coast", "Taormina, Sicily"],
+        ["DSC02927.jpeg", "The snow cone from town", "Taormina", "p"],
+        ["DSC02912.jpeg", "Taormina at blue hour", "Sicily"],
+        ["DSC02699.jpeg", "Beach soccer at dusk", "Sicily"],
+        ["DSC02532.jpeg", "Festival flags in the alley", "Palermo", "p"],
+        ["DSC02940.jpeg", "Cefal\u00f9 under the rock", "Sicily"],
+        ["DSC02364.jpeg", "Through the rock window", "Malta", "p"],
+        ["DSC02508.jpeg", "Blue Grotto from above", "Malta", "p"],
+        ["DSC02395.jpeg", "White cliffs, turquoise water", "Malta"],
+        ["DSC02469.jpeg", "Spring above the Blue Lagoon", "Comino"],
+        ["DSC02320.jpeg", "Valletta harbour at dusk", "Malta", "p"]
+      ]
+    },
+    {
+      id: "indonesia", title: "Indonesia", region: "Bali \u00b7 Gili Islands \u00b7 Lombok",
+      photos: [
+        ["DSC05209.jpeg", "Tegalalang rice terraces", "Bali"],
+        ["DSC05267.jpeg", "Terrace paths", "Bali", "p"],
+        ["DSC05398.jpeg", "Grooming session", "Ubud Monkey Forest"],
+        ["DSC05658.jpeg", "Hidden waterfall", "Bali"],
+        ["DSC04956.jpeg", "Shade on the sand", "Gili Islands", "p"],
+        ["DSC04961.jpeg", "Low tide at the mooring", "Gili Islands"],
+        ["DSC05069.jpeg", "Rinjani across the strait", "Lombok Strait"]
+      ]
+    },
+    {
+      id: "iberia", title: "Iberia", region: "Barcelona \u00b7 Granada \u00b7 Lisbon",
+      photos: [
+        ["DSC09879.jpeg", "Sagrada Fam\u00edlia from the Bunkers", "Barcelona"],
+        ["DSC09884.jpeg", "The city rolling to the sea", "Barcelona"],
+        ["DSC02527.jpeg", "Murals in the old quarter", "Barcelona"],
+        ["DSC03527.jpeg", "The Alhambra before the Sierra", "Granada"],
+        ["DSC03540.jpeg", "Whitewashed lanes of the Albaic\u00edn", "Granada", "p"],
+        ["DSC01978.jpeg", "Rooftops at golden hour", "Lisbon"],
+        ["DSC01977.jpeg", "The bridge in the distance", "Lisbon", "p"]
+      ]
+    },
+    {
+      id: "old-europe", title: "Alps & Old Europe", region: "Zermatt \u00b7 Budapest \u00b7 Rome \u00b7 Florence",
+      photos: [
+        ["DSC00559.jpeg", "The Matterhorn", "Zermatt, Switzerland"],
+        ["DSC00682.jpeg", "The village below the peak", "Zermatt"],
+        ["DSC00618.jpeg", "Deckchairs at altitude", "Zermatt", "p"],
+        ["DSC00073.jpeg", "Parliament on the Danube", "Budapest"],
+        ["DSC00167.jpeg", "Fisherman's Bastion", "Budapest", "p"],
+        ["DSC00174.jpeg", "The Danube through the arches", "Budapest"],
+        ["DSC02071.jpeg", "The Colosseum", "Rome"],
+        ["DSC02085.jpeg", "The Duomo against the sun", "Florence", "p"]
+      ]
+    },
+    {
+      id: "new-york", title: "New York", region: "Manhattan \u00b7 the Hudson",
+      photos: [
+        ["DSC00556.jpeg", "Lower Manhattan through haze", "New York"],
+        ["DSC05963.jpeg", "One WTC from Chinatown", "New York", "p"],
+        ["DSC06160.jpeg", "Midtown at night", "New York"],
+        ["DSC00549.jpeg", "Sunset over the Hudson", "New York"]
+      ]
+    }
+  ];
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const pad = n => String(n).padStart(2, '0');
+
+  /* ----- build location index ----- */
+  const locList = document.getElementById('loc-list');
+  COLLECTIONS.forEach((c, i) => {
+    const li = document.createElement('li');
+    li.className = 'loc-item';
+    li.innerHTML = `
+      <a class="loc-link" href="#${c.id}" data-cover="photos/${c.photos[0][0]}">
+        <span class="loc-num">${pad(i + 1)}</span>
+        <span class="loc-name">${c.title}</span>
+        <span class="loc-meta">${c.region}<br>${c.photos.length} frames</span>
+      </a>`;
+    locList.appendChild(li);
+  });
+
+  /* ----- cursor-following preview (lerped, transform-only) ----- */
+  const preview = document.getElementById('loc-preview');
+  if (canHover && !reduceMotion) {
+    let mx = innerWidth / 2, my = innerHeight / 2, px = mx, py = my, raf = null, active = false;
+    const imgs = {};
+    COLLECTIONS.forEach(c => {
+      const img = document.createElement('img');
+      img.alt = ''; img.dataset.src = 'photos/' + c.photos[0][0];
+      preview.appendChild(img);
+      imgs['photos/' + c.photos[0][0]] = img;
+    });
+    function loop() {
+      px += (mx - px) * 0.16;
+      py += (my - py) * 0.16;
+      preview.style.transform = `translate3d(${px}px, ${py}px, 0) translate(-50%, -50%) scale(1)`;
+      raf = (active || Math.hypot(mx - px, my - py) > 0.5) ? requestAnimationFrame(loop) : null;
+    }
+    locList.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; });
+    locList.querySelectorAll('.loc-link').forEach(a => {
+      a.addEventListener('pointerenter', () => {
+        const img = imgs[a.dataset.cover];
+        if (!img.src) img.src = img.dataset.src;
+        Object.values(imgs).forEach(el => el.classList.toggle('show', el === img));
+        preview.classList.add('on');
+        active = true;
+        if (!raf) { px = mx; py = my; raf = requestAnimationFrame(loop); }
+      });
+    });
+    locList.addEventListener('pointerleave', () => { preview.classList.remove('on'); active = false; });
+  }
+
+  /* ----- build contact sheets ----- */
+  const main = document.getElementById('collections');
+  const FLAT = []; // flat photo list for the lightbox
+  COLLECTIONS.forEach((c, ci) => {
+    const sec = document.createElement('section');
+    sec.className = 'collection'; sec.id = c.id;
+    sec.innerHTML = `
+      <div class="col-head"><span class="col-num">${pad(ci + 1)}</span><h2 class="col-title">${c.title}</h2></div>
+      <p class="col-sub">${c.region} · ${c.photos.length} frames</p>
+      <div class="sheet"></div>`;
+    const sheet = sec.querySelector('.sheet');
+    c.photos.forEach(([file, caption, place, orient], pi) => {
+      const idx = FLAT.length;
+      FLAT.push({ src: 'photos/' + file, caption, place });
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'frame' + (orient === 'p' ? ' portrait' : '');
+      btn.setAttribute('aria-label', `${caption} — ${place}. Open larger view.`);
+      btn.innerHTML = `
+        <div class="frame-img-wrap frame-reveal">
+          <img src="photos/${file}" alt="${caption} — ${place}" loading="lazy">
+          <span class="frame-tag"><span class="no">FR ${pad(pi + 1)}</span><span>${place}</span></span>
+        </div>`;
+      btn.addEventListener('click', () => openLightbox(idx));
+      sheet.appendChild(btn);
+    });
+    main.appendChild(sec);
+  });
+
+  /* ----- empty state vs. galleries ----- */
+  const FRAME_TOTAL = COLLECTIONS.reduce((n, c) => n + c.photos.length, 0);
+  if (FRAME_TOTAL > 0) {
+    document.getElementById('hero-count').textContent = `${FRAME_TOTAL} frames · ${COLLECTIONS.length} collections`;
+    document.getElementById('index-wrap').hidden = false;
+  } else {
+    const dev = document.getElementById('developing');
+    dev.hidden = false;
+    const strip = document.getElementById('dev-strip');
+    strip.innerHTML += strip.innerHTML; // duplicate for seamless marquee loop
+  }
+
+  /* ----- clip-path scroll reveals with stagger ----- */
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target;
+      const pending = [...el.closest('.sheet').querySelectorAll('.frame-reveal:not(.in)')];
+      const i = Math.max(0, pending.indexOf(el));
+      el.style.transitionDelay = reduceMotion ? '0ms' : Math.min(i * 55, 330) + 'ms';
+      el.classList.add('in');
+      io.unobserve(el);
+    }
+  }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
+  document.querySelectorAll('.frame-reveal').forEach(el => io.observe(el));
+
+  /* ----- lightbox ----- */
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lb-img');
+  const lbCap = document.getElementById('lb-caption');
+  const lbCount = document.getElementById('lb-count');
+  let cur = 0, lastFocus = null;
+
+  function render(i) {
+    cur = (i + FLAT.length) % FLAT.length;
+    const p = FLAT[cur];
+    lbImg.classList.remove('ready');
+    const next = new Image();
+    next.onload = () => {
+      lbImg.src = p.src;
+      lbImg.alt = `${p.caption} — ${p.place}`;
+      requestAnimationFrame(() => lbImg.classList.add('ready'));
+    };
+    next.src = p.src;
+    lbCap.innerHTML = `<span class="place">${p.place}</span> — ${p.caption}`;
+    lbCount.textContent = `${pad(cur + 1)} / ${pad(FLAT.length)}`;
+    // preload neighbours
+    new Image().src = FLAT[(cur + 1) % FLAT.length].src;
+    new Image().src = FLAT[(cur - 1 + FLAT.length) % FLAT.length].src;
+  }
+  function openLightbox(i) {
+    lastFocus = document.activeElement;
+    render(i);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('lb-close').focus();
+  }
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus();
+  }
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.getElementById('lb-prev').addEventListener('click', () => render(cur - 1));
+  document.getElementById('lb-next').addEventListener('click', () => render(cur + 1));
+  lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb-stage')) closeLightbox(); });
+  addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowRight') render(cur + 1);
+    else if (e.key === 'ArrowLeft') render(cur - 1);
+  });
+
+  /* ----- nav border ----- */
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 12), { passive: true });
+</script>
+</body>
+</html>
