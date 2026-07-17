@@ -36,15 +36,16 @@
   }
   ::selection { background: var(--amber); color: #fff; }
 
-  /* ---------- CUSTOM CURSOR (camera silhouette) ---------- */
+  /* ---------- CUSTOM CURSOR (camera / camera-with-flash on click) ---------- */
   .cursor-icon {
     position: fixed; top: 0; left: 0; z-index: 9999;
-    width: 28px; height: 28px; margin: -14px 0 0 -14px;
-    pointer-events: none; mix-blend-mode: difference;
-    opacity: 0; transition: opacity 0.25s ease;
+    width: 46px; height: 46px; margin: -23px 0 0 -23px;
+    pointer-events: none; opacity: 0;
+    transition: opacity 0.25s ease;
     will-change: transform;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.55)) drop-shadow(0 0 1px rgba(233,230,218,0.5));
   }
-  .cursor-icon svg { width: 100%; height: 100%; display: block; fill: #fff; }
+  .cursor-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
   @media (hover: hover) and (pointer: fine) {
     html.cursor-custom, html.cursor-custom * { cursor: none !important; }
   }
@@ -365,30 +366,34 @@
 </footer>
 
 <script>
-  /* ---------- CUSTOM CURSOR: camera silhouette, spring-follow ---------- */
+  /* ---------- CUSTOM CURSOR: camera (default) / camera-flash (click), spring-follow ---------- */
   (function customCursor() {
     if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.documentElement.classList.add('cursor-custom');
     const el = document.createElement('div');
     el.className = 'cursor-icon';
-    el.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8.7 4h6.6l1.5 2H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.2l1.5-2ZM12 9.2a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/></svg>';
+    const img = document.createElement('img');
+    img.src = 'cursors/camera.png'; img.alt = '';
+    el.appendChild(img);
     document.body.appendChild(el);
+    new Image().src = 'cursors/camera-flash.png'; // preload so the click-swap has no flicker
     const SEL = 'a, button, .frame, .loc-link, .lb-btn, .lb-close, [role="button"]';
     let mx = innerWidth / 2, my = innerHeight / 2, x = mx, y = my;
     let hover = false, down = false, shown = false;
     addEventListener('mousemove', e => {
       mx = e.clientX; my = e.clientY;
-      if (!shown) { shown = true; x = mx; y = my; el.style.opacity = 1; }
+      if (!shown) { shown = true; x = mx; y = my; }
+      el.style.opacity = 1;
       hover = !!(e.target.closest && e.target.closest(SEL));
     }, { passive: true });
-    addEventListener('mousedown', () => down = true, { passive: true });
-    addEventListener('mouseup', () => down = false, { passive: true });
+    addEventListener('mousedown', () => { down = true; img.src = 'cursors/camera-flash.png'; }, { passive: true });
+    addEventListener('mouseup', () => { down = false; img.src = 'cursors/camera.png'; }, { passive: true });
     addEventListener('mouseout', e => { if (!e.relatedTarget) el.style.opacity = 0; }, { passive: true });
     (function loop() {
       const k = reduce ? 1 : 0.4;
       x += (mx - x) * k; y += (my - y) * k;
-      const s = (hover ? 1.3 : 1) * (down ? 0.82 : 1);
+      const s = (hover ? 1.12 : 1) * (down ? 0.92 : 1);
       el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ')';
       requestAnimationFrame(loop);
     })();
