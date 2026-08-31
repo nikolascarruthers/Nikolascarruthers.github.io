@@ -349,26 +349,6 @@
   .exp-points li::before { content: '↳'; position: absolute; left: 0; color: var(--orange); }
   @media (max-width: 860px) { .exp-row { grid-template-columns: 1fr; gap: 0.75rem; } }
 
-  /* ---------- FEATURED EXPERIENCE (ParkGuard) ---------- */
-  .exp-feature {
-    display: flex; flex-direction: column; gap: 1rem;
-    border: 1px solid var(--green-bright);
-    background: var(--paper);
-    padding: 1.8rem 1.8rem 1.6rem;
-    margin-bottom: 1.8rem;
-    position: relative;
-    animation: cardGlow 3.2s ease-in-out infinite;
-  }
-  .badge.live { background: var(--green-bright); }
-  .exp-feature .proj-cat { color: var(--green-bright); }
-  @keyframes cardGlow {
-    0%, 100% { box-shadow: 0 0 6px rgba(14,138,86,0.12), 0 0 0 rgba(14,138,86,0); }
-    50% { box-shadow: 0 0 20px rgba(14,138,86,0.4), 0 0 44px rgba(14,138,86,0.18); }
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .exp-feature:hover { box-shadow: 0 0 24px rgba(14,138,86,0.55), 0 0 52px rgba(14,138,86,0.25); animation-play-state: paused; }
-  }
-
   /* ---------- PROJECTS ---------- */
   .proj-note { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
   .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; }
@@ -428,6 +408,23 @@
   }
   .badge.case { background: var(--ink); }
   .badge.notion { background: #2b4a8b; }
+
+  /* light-green featured tile (ParkGuard) */
+  .proj-feature.park {
+    background: #e3efdd;
+    border-color: var(--green-bright);
+    animation: parkGlow 3.2s ease-in-out infinite;
+  }
+  .proj-feature.park .proj-cat { color: var(--green-bright); }
+  .badge.beta { background: var(--green-bright); }
+  @keyframes parkGlow {
+    0%, 100% { box-shadow: 0 0 6px rgba(14,138,86,0.12), 0 0 0 rgba(14,138,86,0); }
+    50% { box-shadow: 0 0 20px rgba(14,138,86,0.4), 0 0 44px rgba(14,138,86,0.18); }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .proj-feature.park:hover .proj-name { animation: none; }
+    .proj-feature.park:hover { box-shadow: 0 0 24px rgba(14,138,86,0.55), 0 0 52px rgba(14,138,86,0.25); animation-play-state: paused; }
+  }
   .proj-stats {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
     background: var(--line-strong); border: 1px solid var(--line-strong);
@@ -559,7 +556,8 @@
     .reveal { opacity: 1; transform: none; transition: opacity 200ms ease; }
     .cue-arrow { animation: none; }
     .glow-title, #work .proj-name { animation: none; text-shadow: none; }
-    .exp-feature { animation: none; box-shadow: 0 0 16px rgba(14,138,86,0.25); }
+    .proj-feature.park { animation: none; box-shadow: 0 0 16px rgba(14,138,86,0.25); }
+    .proj-feature.park .proj-name { animation: none; text-shadow: none; }
     .chip { opacity: 1; transform: none; }
     .scroll-progress { display: none; }
   }
@@ -650,23 +648,6 @@
     <span class="mono">2021 — Present</span>
   </div>
   <div class="exp">
-    <div class="exp-feature reveal pop">
-      <div class="proj-top">
-        <span class="badge live">iOS APP · LIVE</span>
-        <span class="proj-cat">Product Design · iOS Development</span>
-      </div>
-      <div class="proj-name glow-title">ParkGuard — Founder &amp; Builder</div>
-      <div class="proj-skill">Skill: Product Design &amp; Native App Development</div>
-      <p class="proj-desc">Designed and built a native iOS app that saves your parking spot automatically — detecting the moment your phone disconnects from the car's audio — then reads the parking signs on that block (on-device, via camera) and pulls official city sweeping schedules to warn you before a ticket, with reminders tuned to each type of zone. Live with real testers in San Diego, with a public waitlist for new cities.</p>
-      <div class="proj-stats">
-        <div class="proj-stat"><div class="proj-stat-num">16</div><div class="proj-stat-label">Zone types recognized (meters, sweeping, permit, tow-away &amp; more)</div></div>
-        <div class="proj-stat"><div class="proj-stat-num">0</div><div class="proj-stat-label">Taps needed to save your spot</div></div>
-        <div class="proj-stat"><div class="proj-stat-num">100%</div><div class="proj-stat-label">On-device sign scanning — nothing uploaded</div></div>
-      </div>
-      <div class="proj-dl-row">
-        <a class="proj-dl-btn" href="https://parkguard.app" target="_blank" rel="noopener">Visit parkguard.app ↗</a>
-      </div>
-    </div>
     <div class="exp-row reveal">
       <div class="exp-when">May 2026 — Present</div>
       <div><div class="exp-role">AI Fellow</div><div class="exp-org">Handshake · Remote</div></div>
@@ -709,6 +690,23 @@
     <span class="proj-note">Every card downloads the actual file</span>
   </div>
   <div class="proj-grid">
+    <div class="proj proj-feature park reveal pop">
+      <div class="proj-top">
+        <span class="badge beta">iOS APP · BETA</span>
+        <span class="proj-cat">Product Design · iOS Development</span>
+      </div>
+      <div class="proj-name">ParkGuard — Founder &amp; Builder</div>
+      <div class="proj-skill">Skill: Product Design &amp; Native App Development</div>
+      <p class="proj-desc">Designed and built a native iOS app that saves your parking spot automatically — detecting the moment your phone disconnects from the car's audio — then reads the parking signs on that block (on-device, via camera) and pulls official city sweeping schedules to warn you before a ticket, with reminders tuned to each type of zone. Currently in closed beta testing with early users in San Diego, with a public waitlist open for new cities.</p>
+      <div class="proj-stats">
+        <div class="proj-stat"><div class="proj-stat-num">16</div><div class="proj-stat-label">Zone types recognized (meters, sweeping, permit, tow-away &amp; more)</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">0</div><div class="proj-stat-label">Taps needed to save your spot</div></div>
+        <div class="proj-stat"><div class="proj-stat-num">100%</div><div class="proj-stat-label">On-device sign scanning — nothing uploaded</div></div>
+      </div>
+      <div class="proj-dl-row">
+        <a class="proj-dl-btn" href="https://parkguard.app" target="_blank" rel="noopener">Visit parkguard.app ↗</a>
+      </div>
+    </div>
     <a class="proj reveal" href="files/Discounted Cash Flow (DCF) Valuation Model.xlsx" download>
       <div class="proj-top"><span class="badge xlsx">XLSX</span><span class="proj-cat">Financial Modeling</span></div>
       <div class="proj-name">Discounted Cash Flow (DCF) Valuation Model</div>
@@ -937,7 +935,7 @@
     el.appendChild(img);
     document.body.appendChild(el);
     new Image().src = 'cursors/bear.png'; // preload so the click-swap has no flicker
-    const SEL = 'a, button, .btn, .proj, .proj-feature, .exp-feature, .chip, .frame, .loc-link, [role="button"], input, textarea, select';
+    const SEL = 'a, button, .btn, .proj, .proj-feature, .chip, .frame, .loc-link, [role="button"], input, textarea, select';
     let mx = innerWidth / 2, my = innerHeight / 2, x = mx, y = my;
     let hover = false, down = false, shown = false;
     addEventListener('mousemove', e => {
